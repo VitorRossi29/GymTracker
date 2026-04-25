@@ -1,0 +1,61 @@
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+*.user
+*.opensdf
+*.sdf
+*.ipch
+*.db
+*.opendb
+*.VC.db
+*.VC.opendb
+*.wsuo
+
+# Build folders
+build/
+out/
+Debug/
+Release/
+x64/
+x86/
+bin/
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+CTestTestfile.cmake
+Testing/
+
+# Compiled files
+*.obj
+*.o
+*.exe
+*.out
+*.dll
+*.so
+*.a
+*.lib
+*.ilk
+*.pdb
+*.idb
+*.tlog
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# ImGui config local
+imgui.ini
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Zip files opcionais
+*.zip
