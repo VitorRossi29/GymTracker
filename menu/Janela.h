@@ -2,19 +2,43 @@
 #include "../sistema/Academia.h"
 #include "imgui.h"
 #include "../sistema/Exercicio.h"
+#include "../sistema/Treino.h"
+#include <vector>
 
 class Janela
 {
 private:
-	Academia* sistemaAcademia;
-	int itemAtual;
-	bool mostrarTelaCadastrarExercicio;
-	bool mostrarTelaVerExercicios;
-	char nome[100];
+    Academia* sistemaAcademia;
+
+    int itemAtual;
+
+    bool mostrarTelaCadastrarExercicio;
+    bool mostrarTelaVerExercicios;
+
+    bool mostrarTelaCriarTreino;
+    bool mostrarTelaRealizarTreino;
+
+    char nome[100];
+
+    char nomeTreino[100];
+    char diaTreino[100];
+
+    int exercicioSelecionado;
+
+    std::vector<Exercicio> exerciciosSelecionados;
+
+	int treinoSelecionado;
+	std::vector<int> exerciciosConcluidos;
+
 public:
-	Janela(Academia* sistema);
-	void renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNormal);
-	void customizarEstilo();
-	void telaCadastrarExercicio();
-	void telaMostrarExercicios();
+    Janela(Academia* sistema);
+
+    void renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNormal);
+    void customizarEstilo();
+
+    void telaCadastrarExercicio();
+    void telaMostrarExercicios();
+
+    void telaCriarTreino();
+    void telaRealizarTreino();
 };

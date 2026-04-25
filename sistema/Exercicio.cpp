@@ -18,3 +18,18 @@ const std::string Exercicio::getGrupoMuscular()
 {
 	return grupoMuscular;
 }
+
+void Exercicio::setSeries(int s) 
+{ 
+	series = s; 
+}
+
+void Exercicio::setRepeticoes(int r) 
+{ 
+	repeticoes = r; 
+}
+
+void Exercicio::setCarga(float c) 
+{ 
+	carga = c; 
+}

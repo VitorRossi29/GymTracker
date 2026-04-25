@@ -19,6 +19,10 @@ public:
         float carga = 0
     );
 
+    void adicionarTreino(Treino t);
+    
+    std::vector<Treino>& getTreinos();
+    
     std::vector<Exercicio>& getExercicios();
 
     std::vector<std::string>& getGruposMusculares();

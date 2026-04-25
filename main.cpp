@@ -2,6 +2,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "sistema/Academia.h"
+#include <glad/glad.h>
 #include "menu/Janela.h"
 
 #include <GLFW/glfw3.h>
@@ -57,10 +58,10 @@ int main()
    ImFont* fonteGrande =
         io.Fonts->AddFontFromFileTTF("assets/fontes/Tourney-Regular.ttf", 32.0f);
     
-   if (fonteGrande == nullptr)
-   {
+    if (fonteGrande == nullptr)
+    {
        printf("Erro ao carregar fonte\n");
-   }
+    }
 
     while (!glfwWindowShouldClose(window))
     {
@@ -96,6 +97,14 @@ int main()
 
     glfwDestroyWindow(window);
     glfwTerminate();
+
+    glfwMakeContextCurrent(window);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        printf("Erro ao inicializar GLAD\n");
+        return -1;
+    }
 
     return 0;
 }

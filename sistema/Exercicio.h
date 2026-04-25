@@ -16,6 +16,10 @@ public:
 				int repeticoesP = 0,
 				float cargaP = 0
 			);
+
+	void setSeries(int s);
+	void setRepeticoes(int r);
+	void setCarga(float c);
 	const std::string getNome();
 	const std::string getGrupoMuscular();
 };

@@ -24,6 +24,16 @@ std::vector<Exercicio>& Academia::getExercicios()
 	return todosExercicios;
 }
 
+void Academia::adicionarTreino(Treino t)
+{
+    treinos.push_back(t);
+}
+
+std::vector<Treino>& Academia::getTreinos()
+{
+    return treinos;
+}
+
 std::vector<std::string>& Academia::getGruposMusculares()
 {
 	return gruposMusculares;
