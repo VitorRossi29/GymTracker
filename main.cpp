@@ -2,19 +2,21 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "sistema/Academia.h"
-#include <glad/glad.h>
 #include "menu/Janela.h"
 
 #include <GLFW/glfw3.h>
+#include <cstdio>
 
 int main()
 {
-    //IMPORTANTE
     Academia sistema;
-
     Janela janela(&sistema);
 
-    glfwInit();
+    if (!glfwInit())
+    {
+        printf("Erro ao inicializar GLFW\n");
+        return 1;
+    }
 
     GLFWwindow* window = glfwCreateWindow(
         1280, 720,
@@ -30,6 +32,7 @@ int main()
     }
 
     glfwMakeContextCurrent(window);
+    glfwSwapInterval(1); // vsync opcional
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -41,7 +44,7 @@ int main()
 
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 130");
-    
+
     janela.customizarEstilo();
 
     ImFont* fonteNormal =
@@ -50,18 +53,17 @@ int main()
             16.0f
         );
 
-    if (fonteNormal == nullptr)
-    {
-        printf("Erro ao carregar fonte\n");
-    }
+    if (!fonteNormal)
+        printf("Erro ao carregar fonte normal\n");
 
-   ImFont* fonteGrande =
-        io.Fonts->AddFontFromFileTTF("assets/fontes/Tourney-Regular.ttf", 32.0f);
-    
-    if (fonteGrande == nullptr)
-    {
-       printf("Erro ao carregar fonte\n");
-    }
+    ImFont* fonteGrande =
+        io.Fonts->AddFontFromFileTTF(
+            "assets/fontes/Tourney-Regular.ttf",
+            32.0f
+        );
+
+    if (!fonteGrande)
+        printf("Erro ao carregar fonte grande\n");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -79,14 +81,10 @@ int main()
         glfwGetFramebufferSize(window, &display_w, &display_h);
 
         glViewport(0, 0, display_w, display_h);
-
         glClearColor(0.45f, 0.55f, 0.60f, 1.00f);
-
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ImGui_ImplOpenGL3_RenderDrawData(
-            ImGui::GetDrawData()
-        );
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
     }
@@ -97,14 +95,6 @@ int main()
 
     glfwDestroyWindow(window);
     glfwTerminate();
-
-    glfwMakeContextCurrent(window);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        printf("Erro ao inicializar GLAD\n");
-        return -1;
-    }
 
     return 0;
 }
