@@ -10,7 +10,8 @@ Janela::Janela(Academia* sistema) :
     mostrarTelaVerExercicios(false),
     mostrarTelaCriarTreino(false),      // 🆕
     mostrarTelaRealizarTreino(false),   // 🆕
-    exercicioSelecionado(0)
+    exercicioSelecionado(0),
+    nomeTreino("")
 {
 }
 
