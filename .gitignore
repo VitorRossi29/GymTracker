@@ -1,6 +1,9 @@
 # Visual Studio
 .vs/
 *.vcxproj.user
+*.vcxproj
+*.vcxproj.filters.
+*.sln
 *.suo
 *.user
 *.opensdf
