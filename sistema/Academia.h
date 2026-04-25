@@ -6,11 +6,13 @@
 class Academia
 {
 private:
-	std::vector<Exercicio> todosExercicios;
-	std::vector<Treino> treinos;
+    std::vector<Exercicio> todosExercicios;
+    std::vector<Treino> treinos;
     std::vector<std::string> gruposMusculares;
+
 public:
     Academia();
+
     void adicionarExercicio(
         std::string nome = "",
         std::string grupo = "",
@@ -19,11 +21,11 @@ public:
         float carga = 0
     );
 
-    void adicionarTreino(Treino t);
-    
-    std::vector<Treino>& getTreinos();
-    
-    std::vector<Exercicio>& getExercicios();
+    bool exercicioExiste(const std::string& nome);
 
+    void adicionarTreino(Treino t);
+
+    std::vector<Treino>& getTreinos();
+    std::vector<Exercicio>& getExercicios();
     std::vector<std::string>& getGruposMusculares();
 };

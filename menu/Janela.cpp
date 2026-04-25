@@ -1,6 +1,6 @@
 #include "Janela.h"
 #include <iostream>
-
+#include <cstring>
 
 Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
@@ -8,10 +8,17 @@ Janela::Janela(Academia* sistema) :
     nome(""),
     mostrarTelaCadastrarExercicio(false),
     mostrarTelaVerExercicios(false),
+<<<<<<< HEAD
     mostrarTelaCriarTreino(false),      // 🆕
     mostrarTelaRealizarTreino(false),   // 🆕
     exercicioSelecionado(0),
     nomeTreino("")
+=======
+    mostrarTelaCriarTreino(false),
+    mostrarTelaRealizarTreino(false),
+    exercicioSelecionado(0),
+    treinoSelecionado(-1)
+>>>>>>> 06986a9 (implementação de carga, repetições e séries, remoção de bugs)
 {
 }
 
@@ -35,64 +42,39 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
     ImGui::Text("GymTracker");
 
     ImGui::PopFont();
-
     ImGui::PushFont(fonteNormal);
 
-    ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f - ImGui::CalcTextSize("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!").x / 2);
+    ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f -
+        ImGui::CalcTextSize("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!").x / 2);
+
     ImGui::Text("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!");
 
     ImGui::Spacing();
-    ImGui::Spacing();
 
-    // 🔹 Botões centralizados
     float center = ImGui::GetWindowWidth() / 2.0f;
 
     ImGui::SetCursorPosX(center - 100);
     if (ImGui::Button("Realizar Treino", ImVec2(200, 40)))
-    {
-		mostrarTelaRealizarTreino = true;
-    }
+        mostrarTelaRealizarTreino = true;
 
     ImGui::SetCursorPosX(center - 100);
     if (ImGui::Button("Cadastrar Treino", ImVec2(200, 40)))
-    {
-		mostrarTelaCriarTreino = true;
-    }
+        mostrarTelaCriarTreino = true;
 
     ImGui::SetCursorPosX(center - 100);
     if (ImGui::Button("Cadastrar Exercicio", ImVec2(200, 40)))
-    {
         mostrarTelaCadastrarExercicio = true;
-    }
 
     ImGui::SetCursorPosX(center - 100);
     if (ImGui::Button("Ver Exercicios", ImVec2(200, 40)))
-    {
         mostrarTelaVerExercicios = true;
-    }
 
     ImGui::PopFont();
 
-    // 🔹 Telas secundárias
-    if (mostrarTelaCadastrarExercicio)
-    {
-        telaCadastrarExercicio();
-    }
-
-    if (mostrarTelaVerExercicios)
-    {
-        telaMostrarExercicios();
-    }
-
-	if (mostrarTelaCriarTreino)
-	{
-    	telaCriarTreino();
-	}
-
-	if (mostrarTelaRealizarTreino)
-	{
-    	telaRealizarTreino();
-	}
+    if (mostrarTelaCadastrarExercicio) telaCadastrarExercicio();
+    if (mostrarTelaVerExercicios) telaMostrarExercicios();
+    if (mostrarTelaCriarTreino) telaCriarTreino();
+    if (mostrarTelaRealizarTreino) telaRealizarTreino();
 
     ImGui::End();
 }
@@ -189,72 +171,88 @@ void Janela::customizarEstilo()
 
 void Janela::telaCadastrarExercicio()
 {
-	ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
 
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(io.DisplaySize);
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
 
-	ImGui::Begin("Cadastrar Exercicio", &mostrarTelaCadastrarExercicio,
-    ImGuiWindowFlags_NoResize |
-    ImGuiWindowFlags_NoMove
-	);
+    ImGui::Begin("Cadastrar Exercicio", &mostrarTelaCadastrarExercicio,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-	ImGui::InputText("Nome do Exercicio", nome, 100);
-		
-	std::vector<std::string> listaMusculos = sistemaAcademia->getGruposMusculares();
+    ImGui::InputText("Nome", nome, 100);
 
-	std::vector<const char*> musculosConstChar;
-	musculosConstChar.reserve(listaMusculos.size());
-	for (const auto& m : listaMusculos)
-	{
-		musculosConstChar.push_back(m.c_str());
-	}
-	ImGui::Combo("Grupo Muscular", &itemAtual, musculosConstChar.data(), static_cast<int>(musculosConstChar.size()));	
+    static int series = 0;
+    static int repeticoes = 0;
+    static float carga = 0;
 
-	if (ImGui::Button("Cadastrar"))
-	{
-		std::string nomeExercicio = nome;
-		std::string grupoSelecionado = listaMusculos[itemAtual];
+    ImGui::InputInt("Series", &series);
+    ImGui::InputInt("Repeticoes", &repeticoes);
+    ImGui::InputFloat("Carga em KG", &carga);
 
-		sistemaAcademia->adicionarExercicio(nomeExercicio, grupoSelecionado);
+    auto listaMusculos = sistemaAcademia->getGruposMusculares();
 
-		nome[0] = '\0';       
-		itemAtual = 0;        
+    std::vector<const char*> musculos;
+    for (auto& m : listaMusculos)
+        musculos.push_back(m.c_str());
 
-		mostrarTelaCadastrarExercicio = false;
-	}
+    ImGui::Combo("Grupo Muscular", &itemAtual, musculos.data(), musculos.size());
 
-	ImGui::End();
+    if (ImGui::Button("Cadastrar"))
+    {
+        std::string nomeEx = nome;
+
+        sistemaAcademia->adicionarExercicio(
+            nomeEx,
+            listaMusculos[itemAtual],
+            series,
+            repeticoes,
+            carga
+        );
+
+        nome[0] = '\0';
+        series = repeticoes = 0;
+        carga = 0;
+        itemAtual = 0;
+
+        mostrarTelaCadastrarExercicio = false;
+    }
+
+    ImGui::End();
 }
 
 void Janela::telaMostrarExercicios()
 {
-	std::vector<Exercicio> listaExercicios = sistemaAcademia->getExercicios();
+    auto& lista = sistemaAcademia->getExercicios();
 
-	ImGuiIO& io = ImGui::GetIO();
+    ImGuiIO& io = ImGui::GetIO();
 
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(io.DisplaySize);
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
 
-	ImGui::Begin("Lista de Exercicios", &mostrarTelaVerExercicios,
-    	ImGuiWindowFlags_NoResize |
-    	ImGuiWindowFlags_NoMove
-	);
+    ImGui::Begin("Lista de Exercicios", &mostrarTelaVerExercicios,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
-	ImGui::Text("Aqui estao listados todos os exercicios cadastrados:");
+    ImGui::Text("Exercicios cadastrados:");
+    ImGui::Separator();
 
-	for (int i = 0; i < listaExercicios.size(); i++)
-	{
-		std::string exercicio = listaExercicios[i].getNome() + " (" + listaExercicios[i].getGrupoMuscular() + ")";
-		ImGui::Text("%s", exercicio.c_str());
-	}
+    for (auto& e : lista)
+    {
+        ImGui::Text("Nome: %s", e.getNome().c_str());
+        ImGui::Text("Grupo: %s", e.getGrupoMuscular().c_str());
 
-	if (ImGui::Button("Sair"))
-	{
-		mostrarTelaVerExercicios = false;
-	}
+        ImGui::Text("Series: %d | Repeticoes: %d | Carga: %.2f",
+            e.getSeries(),
+            e.getRepeticoes(),
+            e.getCarga()
+        );
 
-	ImGui::End();
+        ImGui::Separator();
+    }
+
+    if (ImGui::Button("Sair"))
+        mostrarTelaVerExercicios = false;
+
+    ImGui::End();
 }
 
 void Janela::telaCriarTreino()
@@ -393,46 +391,34 @@ void Janela::telaRealizarTreino()
     ImGui::SetNextWindowSize(io.DisplaySize);
 
     ImGui::Begin("Realizar Treino", &mostrarTelaRealizarTreino,
-        ImGuiWindowFlags_NoResize |
-        ImGuiWindowFlags_NoMove
-    );
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
     auto& treinos = sistemaAcademia->getTreinos();
 
-    
     if (treinos.empty())
     {
-        ImGui::Text("Nenhum treino cadastrado ainda!");
-
+        ImGui::Text("Nenhum treino cadastrado!");
         if (ImGui::Button("Voltar"))
-        {
             mostrarTelaRealizarTreino = false;
-        }
 
         ImGui::End();
         return;
     }
 
-    
-    if (treinoSelecionado >= treinos.size())
-    {
+    if (treinoSelecionado >= (int)treinos.size())
         treinoSelecionado = -1;
-    }
 
-    
     if (treinoSelecionado == -1)
     {
         ImGui::Text("Escolha um treino:");
 
         for (int i = 0; i < treinos.size(); i++)
         {
-            if (ImGui::Button(treinos[i].getNome().c_str(), ImVec2(300, 40)))
+            if (ImGui::Button(treinos[i].getNome().c_str()))
             {
                 treinoSelecionado = i;
 
                 auto& exs = treinos[i].getExercicios();
-
-               
                 exerciciosConcluidos = std::vector<int>(exs.size(), 0);
             }
         }
@@ -440,66 +426,40 @@ void Janela::telaRealizarTreino()
     else
     {
         auto& treino = treinos[treinoSelecionado];
-
-        ImGui::Text("Treino: %s (%s)",
-            treino.getNome().c_str(),
-            treino.getDia().c_str()
-        );
-
-        ImGui::Separator();
-
         auto& exs = treino.getExercicios();
 
-        
-        if (exerciciosConcluidos.size() != exs.size())
-        {
-            exerciciosConcluidos = std::vector<int>(exs.size(), 0);
-        }
+        ImGui::Text("Treino: %s", treino.getNome().c_str());
 
-       
+        if (exerciciosConcluidos.size() != exs.size())
+            exerciciosConcluidos = std::vector<int>(exs.size(), 0);
+
+        int totalSeries = 0;
+        int feitas = 0;
+
         for (int i = 0; i < exs.size(); i++)
         {
-            bool checked = exerciciosConcluidos[i];
+            ImGui::PushID(i);
 
-            if (ImGui::Checkbox(exs[i].getNome().c_str(), &checked))
-            {
-                exerciciosConcluidos[i] = checked;
-            }
+            ImGui::Text("%s", exs[i].getNome().c_str());
+
+            if (ImGui::Button("+ Serie"))
+                exerciciosConcluidos[i]++;
+
+            ImGui::SameLine();
+            ImGui::Text("%d/%d", exerciciosConcluidos[i], exs[i].getSeries());
+
+            totalSeries += exs[i].getSeries();
+            feitas += exerciciosConcluidos[i];
+
+            ImGui::PopID();
         }
 
-        ImGui::Separator();
+        float progresso = totalSeries > 0 ?
+            (float)feitas / (float)totalSeries : 0.0f;
 
-       
-        int total = exerciciosConcluidos.size();
-        int feitos = 0;
+        ImGui::ProgressBar(progresso, ImVec2(300, 20));
 
-        for (int c : exerciciosConcluidos)
-        {
-            if (c) feitos++;
-        }
-
-        float progresso = total > 0 ? (float)feitos / total : 0;
-
-        ImGui::Text("Progresso: %d/%d", feitos, total);
-
-        float largura = 300;
-        float center = ImGui::GetWindowWidth() / 2.0f;
-        ImGui::SetCursorPosX(center - largura / 2);
-
-        ImGui::ProgressBar(progresso, ImVec2(largura, 20));
-
-        ImGui::Separator();
-
-        
-        if (ImGui::Button("Finalizar Treino"))
-        {
-            treinoSelecionado = -1;
-            exerciciosConcluidos.clear();
-        }
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("Voltar"))
+        if (ImGui::Button("Finalizar"))
         {
             treinoSelecionado = -1;
             exerciciosConcluidos.clear();

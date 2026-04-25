@@ -2,26 +2,41 @@
 
 Academia::Academia()
 {
-	gruposMusculares.push_back("Peitoral");
-	gruposMusculares.push_back("Costas");
-	gruposMusculares.push_back("Ombros");
-	gruposMusculares.push_back("Biceps");
-	gruposMusculares.push_back("Triceps");
-	gruposMusculares.push_back("Pernas");
-	gruposMusculares.push_back("Panturrilha");
-	gruposMusculares.push_back("Abdomem");
+    gruposMusculares = {
+        "Peitoral", "Costas", "Ombros",
+        "Biceps", "Triceps", "Pernas",
+        "Panturrilha", "Abdomem"
+    };
 }
 
-void Academia::adicionarExercicio(std::string nome, std::string grupo, int series, int repeticoes, float carga)
+bool Academia::exercicioExiste(const std::string& nome)
 {
-	Exercicio novoExercicio(nome, grupo, series, repeticoes, carga);
+    for (auto& e : todosExercicios)
+    {
+        if (e.getNome() == nome)
+            return true;
+    }
+    return false;
+}
 
-	todosExercicios.push_back(novoExercicio);
+void Academia::adicionarExercicio(
+    std::string nome,
+    std::string grupo,
+    int series,
+    int repeticoes,
+    float carga
+)
+{
+    if (exercicioExiste(nome))
+        return;
+
+    Exercicio novoExercicio(nome, grupo, series, repeticoes, carga);
+    todosExercicios.push_back(novoExercicio);
 }
 
 std::vector<Exercicio>& Academia::getExercicios()
 {
-	return todosExercicios;
+    return todosExercicios;
 }
 
 void Academia::adicionarTreino(Treino t)
@@ -36,6 +51,5 @@ std::vector<Treino>& Academia::getTreinos()
 
 std::vector<std::string>& Academia::getGruposMusculares()
 {
-	return gruposMusculares;
+    return gruposMusculares;
 }
-
