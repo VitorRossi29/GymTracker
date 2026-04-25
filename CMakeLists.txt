@@ -22,6 +22,13 @@ add_executable(GymTracker
 
     backends/imgui_impl_glfw.cpp
     backends/imgui_impl_opengl3.cpp
+     "sistema/Exercicio.cpp" "sistema/Exercicio.h" "sistema/Treino.cpp" "sistema/Treino.h" "sistema/Academia.cpp" "sistema/Academia.h" "menu/Janela.h" "menu/Janela.cpp")
+
+
+add_custom_command(TARGET GymTracker POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    $<TARGET_FILE_DIR:GymTracker>/assets
 )
 
 target_link_libraries(GymTracker
