@@ -8,17 +8,18 @@ Janela::Janela(Academia* sistema) :
     nome(""),
     mostrarTelaCadastrarExercicio(false),
     mostrarTelaVerExercicios(false),
-<<<<<<< HEAD
+//<<<<<<< HEAD
     mostrarTelaCriarTreino(false),      // 🆕
     mostrarTelaRealizarTreino(false),   // 🆕
     exercicioSelecionado(0),
-    nomeTreino("")
-=======
-    mostrarTelaCriarTreino(false),
-    mostrarTelaRealizarTreino(false),
-    exercicioSelecionado(0),
+    nomeTreino(""),
     treinoSelecionado(-1)
->>>>>>> 06986a9 (implementação de carga, repetições e séries, remoção de bugs)
+//=======
+    //mostrarTelaCriarTreino(false),
+    //mostrarTelaRealizarTreino(false),
+    //exercicioSelecionado(0),
+    //treinoSelecionado(-1)
+//>>>>>>> 06986a9 (implementação de carga, repetições e séries, remoção de bugs)
 {
 }
 
