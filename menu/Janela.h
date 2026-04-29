@@ -17,6 +17,7 @@ private:
 
     bool mostrarTelaCriarTreino;
     bool mostrarTelaRealizarTreino;
+	bool mostrarTelaEditarTreino;
 
     char nome[100];
 
@@ -41,4 +42,5 @@ public:
 
     void telaCriarTreino();
     void telaRealizarTreino();
+	void telaEditarTreino();
 };

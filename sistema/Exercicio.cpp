@@ -86,3 +86,4 @@ float Exercicio::getCarga()
 { 
 	return carga; 
 }
+

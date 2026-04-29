@@ -11,6 +11,17 @@ void Treino::adicionarExercicio(const Exercicio& e)
     exercicios.push_back(e); 
 }
 
+void Treino::tiraExercicio(int pos)
+{
+    if (pos >= 0 && pos < exercicios.size())
+        exercicios.erase(exercicios.begin() + pos);
+}
+
+void Treino::setNome(std::string n)
+{
+    nome = n;
+}
+
 std::string Treino::getNome()
 {
     return nome;
@@ -19,6 +30,11 @@ std::string Treino::getNome()
 std::string Treino::getDia()
 {
     return diaSemana;
+}
+
+void Treino::setDia(std::string d)
+{
+    diaSemana = d;
 }
 
 std::vector<Exercicio>& Treino::getExercicios()

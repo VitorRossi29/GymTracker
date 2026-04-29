@@ -6,20 +6,17 @@ Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
     itemAtual(0),
     nome(""),
+
     mostrarTelaCadastrarExercicio(false),
     mostrarTelaVerExercicios(false),
-//<<<<<<< HEAD
-    mostrarTelaCriarTreino(false),      // 🆕
-    mostrarTelaRealizarTreino(false),   // 🆕
+    mostrarTelaCriarTreino(false),     
+    mostrarTelaRealizarTreino(false),  
+	mostrarTelaEditarTreino(false),
+
     exercicioSelecionado(0),
     nomeTreino(""),
     treinoSelecionado(-1)
-//=======
-    //mostrarTelaCriarTreino(false),
-    //mostrarTelaRealizarTreino(false),
-    //exercicioSelecionado(0),
-    //treinoSelecionado(-1)
-//>>>>>>> 06986a9 (implementação de carga, repetições e séries, remoção de bugs)
+
 {
 }
 
@@ -63,6 +60,10 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
         mostrarTelaCriarTreino = true;
 
     ImGui::SetCursorPosX(center - 100);
+    if (ImGui::Button("Editar Treino", ImVec2(200, 40)))
+        mostrarTelaEditarTreino = true;
+
+    ImGui::SetCursorPosX(center - 100);
     if (ImGui::Button("Cadastrar Exercicio", ImVec2(200, 40)))
         mostrarTelaCadastrarExercicio = true;
 
@@ -70,12 +71,15 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
     if (ImGui::Button("Ver Exercicios", ImVec2(200, 40)))
         mostrarTelaVerExercicios = true;
 
+	
+
     ImGui::PopFont();
 
     if (mostrarTelaCadastrarExercicio) telaCadastrarExercicio();
     if (mostrarTelaVerExercicios) telaMostrarExercicios();
     if (mostrarTelaCriarTreino) telaCriarTreino();
     if (mostrarTelaRealizarTreino) telaRealizarTreino();
+	if (mostrarTelaEditarTreino) telaEditarTreino();
 
     ImGui::End();
 }
@@ -464,6 +468,147 @@ void Janela::telaRealizarTreino()
         {
             treinoSelecionado = -1;
             exerciciosConcluidos.clear();
+        }
+    }
+
+    ImGui::End();
+}
+
+void Janela::telaEditarTreino()
+{
+    ImGuiIO& io=ImGui::GetIO();
+
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
+
+    ImGui::Begin("Editar Treino", &mostrarTelaEditarTreino,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+    auto& treinos = sistemaAcademia->getTreinos();
+    
+    if (treinos.empty())
+    {
+        ImGui::Text("Nenhum treino cadastrado!");
+        if (ImGui::Button("Voltar"))
+            mostrarTelaEditarTreino=false;
+
+        ImGui::End();
+        return;
+    }
+
+    if(treinoSelecionado>=(int)treinos.size())
+		treinoSelecionado=-1;
+
+    if(treinoSelecionado==-1)
+    {
+        ImGui::Text("Escolha um treino para editar:");
+
+        for (int i=0; i<treinos.size(); i++)
+        {
+            if (ImGui::Button(treinos[i].getNome().c_str()))
+            {
+                treinoSelecionado=i;
+            }
+        }
+	}
+    else
+    {
+        auto& treino=treinos[treinoSelecionado];
+
+        ImGui::Text("Editando treino:");
+ 
+        static char novoNome[100];
+        strcpy(novoNome, treino.getNome().c_str());
+
+        //edita o nome
+        if(ImGui::InputText("Nome", novoNome, 100))
+        {
+            treino.setNome(novoNome);
+        }
+
+		//edita o dia
+        static int diaSelecionado=0;
+        const char* dias[]={
+            "Segunda",
+            "Terca",
+            "Quarta",
+            "Quinta",
+            "Sexta",
+            "Sabado",
+            "Domingo"
+        };
+        for(int i=0; i<7; i++)
+        {
+            if(strcmp(treino.getDia().c_str(), dias[i])==0)
+            {
+                diaSelecionado=i;
+                break;
+            }
+        }
+        if(ImGui::Combo("Dia do Treino", &diaSelecionado, dias, IM_ARRAYSIZE(dias)))
+        {
+            treino.setDia(dias[diaSelecionado]);
+		}
+
+		ImGui::Separator();
+
+		//adiciona exercicios
+        auto& lista = sistemaAcademia->getExercicios();
+
+        if (exercicioSelecionado>=lista.size())
+            exercicioSelecionado=0;
+
+        std::vector<std::string> nomesStr;
+        for (auto& e : lista)
+            nomesStr.push_back(e.getNome());
+
+        std::vector<const char*> nomes;
+        nomes.reserve(nomesStr.size());
+
+        for (auto& s : nomesStr)
+            nomes.push_back(s.c_str());
+
+        if (!nomes.empty())
+        {
+            ImGui::Combo("Exercicios", &exercicioSelecionado, nomes.data(), nomes.size());
+
+            if (ImGui::Button("Adicionar Exercicio", ImVec2(200, 30)))
+            {
+                if (exercicioSelecionado<lista.size())
+                    treino.adicionarExercicio(lista[exercicioSelecionado]);
+            }
+        }
+
+		ImGui::Separator();
+
+        //remove exercicios
+        auto& exs=treino.getExercicios();
+
+        for (int i=0; i<exs.size(); i++)
+        {
+            ImGui::PushID(i);
+
+            ImGui::Text("%s", exs[i].getNome().c_str());
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Remover"))
+            {
+                treino.tiraExercicio(i);
+                ImGui::PopID();
+                break; 
+            }
+
+            ImGui::PopID();
+        }
+
+		ImGui::Separator();
+
+        //volta
+        if (ImGui::Button("Salvar"))
+        {
+			mostrarTelaEditarTreino=false;  
+			treinoSelecionado=-1;
         }
     }
 
