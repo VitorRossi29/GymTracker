@@ -11,6 +11,9 @@ private:
     Academia* sistemaAcademia;
 
     int itemAtual;
+	bool mostrarTelaInicial;
+    bool mostrarTelaCadastro;
+    bool mostrarTelaLogin;
 
     bool mostrarTelaCadastrarExercicio;
     bool mostrarTelaVerExercicios;
@@ -36,6 +39,9 @@ public:
 
     void renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNormal);
     void customizarEstilo();
+
+	void telaLogin();
+	void telaCadastro();
 
     void telaCadastrarExercicio();
     void telaMostrarExercicios();

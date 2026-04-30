@@ -1,14 +1,20 @@
 #include "Janela.h"
 #include <iostream>
 #include <cstring>
+#include <fstream>
 
 Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
     itemAtual(0),
     nome(""),
 
+    mostrarTelaInicial(true),
+    mostrarTelaCadastro(false),
+	mostrarTelaLogin(false),
+
     mostrarTelaCadastrarExercicio(false),
     mostrarTelaVerExercicios(false),
+
     mostrarTelaCriarTreino(false),     
     mostrarTelaRealizarTreino(false),  
 	mostrarTelaEditarTreino(false),
@@ -34,54 +40,98 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
         ImGuiWindowFlags_NoTitleBar
     );
 
-    ImGui::PushFont(fonteGrande);
+    if(mostrarTelaInicial)
+    {
+        ImGui::SetCursorPosY(io.DisplaySize.y*0.25f);
 
-    ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f - ImGui::CalcTextSize("GymTracker").x / 2);
-    ImGui::Text("GymTracker");
+        ImGui::PushFont(fonteGrande);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth()/2.0f-ImGui::CalcTextSize("GymTracker").x/2);
+        ImGui::Text("GymTracker");
+        ImGui::PopFont();
 
-    ImGui::PopFont();
-    ImGui::PushFont(fonteNormal);
+        ImGui::Spacing();
 
-    ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f -
-        ImGui::CalcTextSize("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!").x / 2);
+        ImGui::PushFont(fonteNormal);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth()/2.0f-
+            ImGui::CalcTextSize("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!").x/2);
 
-    ImGui::Text("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!");
+        ImGui::Text("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!");
+        ImGui::PopFont();
 
-    ImGui::Spacing();
+        ImGui::Spacing();
+        ImGui::Spacing();
 
-    float center = ImGui::GetWindowWidth() / 2.0f;
+        float center=ImGui::GetWindowWidth()/2.0f;
 
-    ImGui::SetCursorPosX(center - 100);
-    if (ImGui::Button("Realizar Treino", ImVec2(200, 40)))
-        mostrarTelaRealizarTreino = true;
+        ImGui::SetCursorPosX(center-100);
+        if(ImGui::Button("Login", ImVec2(200, 40)))
+        {
+            mostrarTelaInicial=false;
+            mostrarTelaLogin=true;
+        }
 
-    ImGui::SetCursorPosX(center - 100);
-    if (ImGui::Button("Cadastrar Treino", ImVec2(200, 40)))
-        mostrarTelaCriarTreino = true;
+        ImGui::SetCursorPosX(center-100);
+        if(ImGui::Button("Cadastrar", ImVec2(200, 40)))
+        {
+            mostrarTelaInicial=false;
+			mostrarTelaCadastro=true;
+        }
 
-    ImGui::SetCursorPosX(center - 100);
-    if (ImGui::Button("Editar Treino", ImVec2(200, 40)))
-        mostrarTelaEditarTreino = true;
+    }
 
-    ImGui::SetCursorPosX(center - 100);
-    if (ImGui::Button("Cadastrar Exercicio", ImVec2(200, 40)))
-        mostrarTelaCadastrarExercicio = true;
+    else
+    {
+        ImGui::PushFont(fonteGrande);
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f - ImGui::CalcTextSize("GymTracker").x / 2);
+        ImGui::Text("GymTracker");
 
-    ImGui::SetCursorPosX(center - 100);
-    if (ImGui::Button("Ver Exercicios", ImVec2(200, 40)))
-        mostrarTelaVerExercicios = true;
+        ImGui::PopFont();
+        ImGui::PushFont(fonteNormal);
 
-	
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() / 2.0f -
+            ImGui::CalcTextSize("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!").x / 2);
 
-    ImGui::PopFont();
+        ImGui::Text("O GymTracker eh um programa feito para registrar e gerenciar seus treinos de academia!");
 
-    if (mostrarTelaCadastrarExercicio) telaCadastrarExercicio();
-    if (mostrarTelaVerExercicios) telaMostrarExercicios();
-    if (mostrarTelaCriarTreino) telaCriarTreino();
-    if (mostrarTelaRealizarTreino) telaRealizarTreino();
-	if (mostrarTelaEditarTreino) telaEditarTreino();
+        ImGui::Spacing();
 
+        float center = ImGui::GetWindowWidth() / 2.0f;
+
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Realizar Treino", ImVec2(200, 40)))
+            mostrarTelaRealizarTreino = true;
+
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Cadastrar Treino", ImVec2(200, 40)))
+            mostrarTelaCriarTreino = true;
+
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Editar Treino", ImVec2(200, 40)))
+            mostrarTelaEditarTreino = true;
+
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Cadastrar Exercicio", ImVec2(200, 40)))
+            mostrarTelaCadastrarExercicio = true;
+
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Ver Exercicios", ImVec2(200, 40)))
+            mostrarTelaVerExercicios = true;
+
+
+
+        ImGui::PopFont();
+
+        if (mostrarTelaCadastrarExercicio) telaCadastrarExercicio();
+        if (mostrarTelaVerExercicios) telaMostrarExercicios();
+        if (mostrarTelaCriarTreino) telaCriarTreino();
+        if (mostrarTelaRealizarTreino) telaRealizarTreino();
+        if (mostrarTelaEditarTreino) telaEditarTreino();
+    }
+
+    if (mostrarTelaCadastro) telaCadastro();
+    if (mostrarTelaLogin) telaLogin();
     ImGui::End();
+
 }
 
 void Janela::customizarEstilo()
@@ -518,7 +568,7 @@ void Janela::telaEditarTreino()
         ImGui::Text("Editando treino:");
  
         static char novoNome[100];
-        strcpy(novoNome, treino.getNome().c_str());
+        strcpy_s(novoNome, treino.getNome().c_str());
 
         //edita o nome
         if(ImGui::InputText("Nome", novoNome, 100))
@@ -610,6 +660,90 @@ void Janela::telaEditarTreino()
 			mostrarTelaEditarTreino=false;  
 			treinoSelecionado=-1;
         }
+    }
+
+    ImGui::End();
+}
+
+void Janela::telaLogin()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
+    ImGui::Begin("Login", &mostrarTelaLogin,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+    static char username[100];
+    static char password[100];
+
+	ImGui::Text("Username");
+    ImGui::InputText("##Username", username, 100);
+
+	ImGui::Text("Password");
+    ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password);
+
+    if(ImGui::Button("Login"))
+    {   
+        mostrarTelaLogin=false;
+    }
+
+    if(ImGui::Button("Voltar"))
+        mostrarTelaLogin=false;
+    ImGui::End();
+}
+
+void Janela::telaCadastro()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
+    ImGui::Begin("Cadastro", &mostrarTelaCadastro,
+        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+    static char username[100];
+    static char password[100];
+    static char confirmPassword[100];
+	static bool erroSenha=false;
+
+    ImGui::Text("Username");
+    if(ImGui::InputText("##Username", username, 100)) erroSenha=false;
+
+	ImGui::Text("Password");
+    if(ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password)) erroSenha=false;
+
+	ImGui::Text("Confirmar Password");
+    if(ImGui::InputText("##ConfirmPassword", confirmPassword, 100, ImGuiInputTextFlags_Password)) erroSenha=false;
+
+    if(ImGui::Button("Cadastrar"))
+    {
+        if(strcmp(password, confirmPassword)!=0)
+        {
+			erroSenha=true;
+        }
+        else
+        {
+			erroSenha=false;
+
+            std::ofstream arquivo("C:\\Users\\user\\source\\repos\\GymTracker\\menu\\usuarios.txt", std::ios::app);
+
+            if (arquivo.is_open())
+            {
+                arquivo<<username<<";"<<password<<"\n";
+                arquivo.close();
+            }
+
+            mostrarTelaCadastro=false;
+        }
+    }
+
+    ImGui::SameLine(0,20);
+
+    if(ImGui::Button("Voltar"))
+        mostrarTelaCadastro=false;
+
+    if (erroSenha)
+    {
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "As senhas não coincidem");
     }
 
     ImGui::End();
