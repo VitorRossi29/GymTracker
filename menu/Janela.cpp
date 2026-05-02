@@ -236,13 +236,13 @@ void Janela::telaCadastrarExercicio()
 
     ImGui::InputText("Nome", nome, 100);
 
-    static int series = 0;
+   /* static int series = 0;
     static int repeticoes = 0;
     static float carga = 0;
 
     ImGui::InputInt("Series", &series);
     ImGui::InputInt("Repeticoes", &repeticoes);
-    ImGui::InputFloat("Carga em KG", &carga);
+    ImGui::InputFloat("Carga em KG", &carga);*/
 
     auto listaMusculos = sistemaAcademia->getGruposMusculares();
 
@@ -258,15 +258,15 @@ void Janela::telaCadastrarExercicio()
 
         sistemaAcademia->adicionarExercicio(
             nomeEx,
-            listaMusculos[itemAtual],
+            listaMusculos[itemAtual]/*,
             series,
             repeticoes,
-            carga
+            carga*/
         );
 
         nome[0] = '\0';
-        series = repeticoes = 0;
-        carga = 0;
+       /* series = repeticoes = 0;
+        carga = 0;*/
         itemAtual = 0;
 
         mostrarTelaCadastrarExercicio = false;
@@ -295,11 +295,11 @@ void Janela::telaMostrarExercicios()
         ImGui::Text("Nome: %s", e.getNome().c_str());
         ImGui::Text("Grupo: %s", e.getGrupoMuscular().c_str());
 
-        ImGui::Text("Series: %d | Repeticoes: %d | Carga: %.2f",
+        /*ImGui::Text("Series: %d | Repeticoes: %d | Carga: %.2f",
             e.getSeries(),
             e.getRepeticoes(),
             e.getCarga()
-        );
+        );*/
 
         ImGui::Separator();
     }
@@ -362,6 +362,9 @@ void Janela::telaCriarTreino()
     for (auto& s : nomesStr)
         nomes.push_back(s.c_str());
 
+    
+    static Treino treinoTemp("", "");
+
     if (!nomes.empty())
     {
         ImGui::Combo("Exercicios", &exercicioSelecionado, nomes.data(), nomes.size());
@@ -369,7 +372,9 @@ void Janela::telaCriarTreino()
         if (ImGui::Button("Adicionar Exercicio", ImVec2(200, 30)))
         {
             if (exercicioSelecionado < lista.size())
-                exerciciosSelecionados.push_back(lista[exercicioSelecionado]);
+            {
+                treinoTemp.adicionarExercicio(lista[exercicioSelecionado]);
+            }
         }
     }
     else
@@ -380,17 +385,48 @@ void Janela::telaCriarTreino()
     ImGui::Separator();
     ImGui::Text("Exercicios no treino:");
 
-    for (int i = 0; i < exerciciosSelecionados.size(); i++)
+    auto& exerciciosDoTreino = treinoTemp.getExercicios();
+
+    static int editarSerieIndex = -1;
+    static int repeticoesTemp = 0;
+    static float cargaTemp = 0.0f;
+
+    for (int i = 0; i < exerciciosDoTreino.size(); i++)
     {
         ImGui::PushID(i);
 
-        ImGui::Text("%s", exerciciosSelecionados[i].getNome().c_str());
+        ImGui::Text("%s", exerciciosDoTreino[i].getNome().c_str());
+
+        if (exerciciosDoTreino[i].getNumeroDeSeries(treinoTemp.getId()) > 0)
+        {
+            ImGui::Text("%d Series",
+                exerciciosDoTreino[i].getNumeroDeSeries(treinoTemp.getId()));
+
+            for (int j = 0;
+                j < exerciciosDoTreino[i].getNumeroDeSeries(treinoTemp.getId());
+                j++)
+            {
+                ImGui::Text(
+                    "Serie %d: %.1f kg de Carga | %d Repeticoes",
+                    j + 1,
+                    exerciciosDoTreino[i].getCarga(treinoTemp.getId(), j),
+                    exerciciosDoTreino[i].getRepeticoes(treinoTemp.getId(), j)
+                );
+            }
+        }
+
+        if (ImGui::Button("Adicionar Serie"))
+        {
+            editarSerieIndex = i;
+            repeticoesTemp = 0;
+            cargaTemp = 0.0f;
+        }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Remover"))
         {
-            exerciciosSelecionados.erase(exerciciosSelecionados.begin() + i);
+            treinoTemp.tiraExercicio(i);
             ImGui::PopID();
             break;
         }
@@ -399,22 +435,53 @@ void Janela::telaCriarTreino()
         ImGui::PopID();
     }
 
-    ImGui::Spacing();
+    if (editarSerieIndex != -1)
+    {
+        ImGui::OpenPopup("AdicionarSerie");
+    }
 
+    if (ImGui::BeginPopupModal("AdicionarSerie", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    {
+        ImGui::InputFloat("Carga", &cargaTemp);
+        ImGui::InputInt("Repeticoes", &repeticoesTemp);
+
+        if (ImGui::Button("OK"))
+        {
+            exerciciosDoTreino[editarSerieIndex].adicionarSerie(
+                treinoTemp.getId(),
+                cargaTemp,
+                repeticoesTemp
+            );
+
+            editarSerieIndex = -1;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Cancelar"))
+        {
+            editarSerieIndex = -1;
+            ImGui::CloseCurrentPopup();
+        }
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::Spacing();
     ImGui::SetCursorPosX(center - 100);
 
     if (ImGui::Button("Salvar Treino", ImVec2(200, 40)))
     {
-        if (strlen(nomeTreino) > 0 && !exerciciosSelecionados.empty())
+        if (strlen(nomeTreino) > 0 && !exerciciosDoTreino.empty())
         {
-            Treino t(nomeTreino, dias[diaSelecionado]);
+            treinoTemp.setNome(nomeTreino);
+            treinoTemp.setDia(dias[diaSelecionado]);
 
-            for (auto& e : exerciciosSelecionados)
-                t.adicionarExercicio(e);
+            sistemaAcademia->adicionarTreino(treinoTemp);
 
-            sistemaAcademia->adicionarTreino(t);
+            treinoTemp = Treino("", "");
 
-            exerciciosSelecionados.clear();
             exercicioSelecionado = 0;
             nomeTreino[0] = '\0';
             diaSelecionado = 0;
@@ -430,8 +497,10 @@ void Janela::telaCriarTreino()
     if (ImGui::BeginPopup("Erro"))
     {
         ImGui::Text("Preencha o nome e adicione pelo menos 1 exercicio!");
+
         if (ImGui::Button("OK"))
             ImGui::CloseCurrentPopup();
+
         ImGui::EndPopup();
     }
 
@@ -496,14 +565,44 @@ void Janela::telaRealizarTreino()
             ImGui::PushID(i);
 
             ImGui::Text("%s", exs[i].getNome().c_str());
-
-            if (ImGui::Button("+ Serie"))
-                exerciciosConcluidos[i]++;
-
+            
             ImGui::SameLine();
-            ImGui::Text("%d/%d", exerciciosConcluidos[i], exs[i].getSeries());
 
-            totalSeries += exs[i].getSeries();
+            ImGui::Text("%d/%d", exerciciosConcluidos[i], exs[i].getNumeroDeSeries(treino.getId()));
+
+            auto& series = exs[i].getSeries(treino.getId());
+
+            for (int j = 0; j < series.size(); j++)
+            {
+                ImGui::PushID(j);
+
+                bool& concluida = exs[i].getConcluidaRef(treino.getId(), j);
+                bool antes = concluida;
+
+                if (ImGui::Checkbox("##Serie", &concluida))
+                {
+                    if (!antes && concluida)
+                    {
+                        exerciciosConcluidos[i]++;
+                    }
+
+                    if (antes && !concluida)
+                    {
+                        exerciciosConcluidos[i]--;
+                    }
+                }
+
+                ImGui::SameLine();
+
+                ImGui::Text("Serie %d: %.1f kg de Carga | %d Repeticoes", j + 1,
+                    exs[i].getCarga(treino.getId(), j),
+                    exs[i].getRepeticoes(treino.getId(), j)
+                );
+
+                ImGui::PopID();
+            }
+
+            totalSeries += exs[i].getNumeroDeSeries(treino.getId());
             feitas += exerciciosConcluidos[i];
 
             ImGui::PopID();
@@ -516,6 +615,10 @@ void Janela::telaRealizarTreino()
 
         if (ImGui::Button("Finalizar"))
         {
+            for (int i = 0; i < exs.size(); i++)
+            {
+                exs[i].setSeriesConcluidas(treino.getId(), exs[i].getNumeroDeSeries(treino.getId()), false);
+            }
             treinoSelecionado = -1;
             exerciciosConcluidos.clear();
         }

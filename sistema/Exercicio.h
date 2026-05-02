@@ -1,40 +1,44 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <map>
+#include "Serie.h"
 
 class Exercicio
 {
 private:
     std::string nome;
     std::string grupoMuscular;
-    int series;
-    int repeticoes;
-    float carga;
 
-    int seriesConcluidas = 0;
+    std::map<int, std::vector<Serie>> seriesEmSi;
 
 public:
     Exercicio(
         std::string nomeP = "nome",
-        std::string grupoMuscularP = "",
-        int seriesP = 0,
-        int repeticoesP = 0,
-        float cargaP = 0
+        std::string grupoMuscularP = ""
     );
-
-    void setSeries(int s);
-    void setRepeticoes(int r);
-    void setCarga(float c);
-
-    void setSeriesConcluidas(int s);
-    void incrementarSerie();
-
-    float getProgresso() const;
 
     const std::string getNome();
     const std::string getGrupoMuscular();
 
-    int getSeries() const;
-    int getSeriesConcluidas() const;
-	int getRepeticoes();
-	float getCarga();
+    /*void setNumeroDeSeries(unsigned int idTreino, int numS);*/
+
+    //void aumentarNumeroDeSeries(unsigned int idTreino);
+
+    void setSeriesConcluidas(unsigned int idTreino, int s, bool conc);
+    void concluirSerie(unsigned int idTreino, int idSerie);
+    /*void incrementarSerie(unsigned int idTreino);*/
+
+    float getProgresso(unsigned int idTreino);
+
+    int getNumeroDeSeries(unsigned int idTreino);
+    int getSeriesConcluidas(unsigned int idTreino);
+    bool& getConcluidaRef(int idTreino, int idSerie);
+
+	const int getRepeticoes(unsigned int idTreino, unsigned int idSerie);
+	const float getCarga(unsigned int idTreino, unsigned int idSerie);
+
+    void adicionarSerie(unsigned int idTreino, float car, unsigned int reps);
+
+    std::vector<Serie>& getSeries(unsigned int idTreino);
 };

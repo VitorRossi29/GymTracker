@@ -1,6 +1,9 @@
 #include "Treino.h"
 
-Treino::Treino(std::string nomeP, std::string diaP)
+unsigned int Treino::id_acumulativo = 0;
+
+Treino::Treino(std::string nomeP, std::string diaP) :
+    id(id_acumulativo++)
 {
     nome = nomeP;
     diaSemana = diaP;
@@ -40,4 +43,14 @@ void Treino::setDia(std::string d)
 std::vector<Exercicio>& Treino::getExercicios()
 {
     return exercicios;
+}
+
+const unsigned int Treino::getId() const
+{
+    return id;
+}
+
+unsigned int Treino::getId_acumulativo()
+{
+    return id_acumulativo;
 }

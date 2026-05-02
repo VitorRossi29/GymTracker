@@ -1,18 +1,10 @@
 #include "Exercicio.h"
+#include "Serie.h"
+#include <stdexcept>
 
-Exercicio::Exercicio(
-    std::string nomeP,
-    std::string grupoMuscularP,
-    int seriesP,
-    int repeticoesP,
-    float cargaP
-) :
+Exercicio::Exercicio(std::string nomeP, std::string grupoMuscularP) :
     nome(nomeP),
-    grupoMuscular(grupoMuscularP),
-    series(seriesP),
-    repeticoes(repeticoesP),
-    carga(cargaP),
-    seriesConcluidas(0)
+    grupoMuscular(grupoMuscularP)
 {
 }
 
@@ -26,64 +18,92 @@ const std::string Exercicio::getGrupoMuscular()
     return grupoMuscular;
 }
 
-int Exercicio::getSeries() const
+//Importante
+int Exercicio::getNumeroDeSeries(unsigned int idTreino)
 {
-    return series;
+    if(!seriesEmSi[idTreino].empty())
+        return seriesEmSi[idTreino].size();
+    return 0;
 }
 
-int Exercicio::getSeriesConcluidas() const
+int Exercicio::getSeriesConcluidas(unsigned int idTreino)
 {
+    int seriesConcluidas = 0;
+    int i = 0;
+
+    if (seriesEmSi[idTreino].empty())
+        return 0;
+
+    for(i = 0; i < seriesEmSi[idTreino].size(); i++)
+    {
+        if (seriesEmSi[idTreino][i].getConcluida() == true)
+            seriesConcluidas++;
+    }
+
     return seriesConcluidas;
 }
 
-void Exercicio::setSeries(int s)
+bool& Exercicio::getConcluidaRef(int idTreino, int idSerie)
 {
-    if (s < 0)
-        series = 0;
-    else
-        series = s;
+       if (idSerie >= seriesEmSi[idTreino].size())
+        throw std::out_of_range("idSerie invalido");
+
+    return seriesEmSi[idTreino][idSerie].getConcluidaRef();
 }
 
-void Exercicio::setRepeticoes(int r)
+void Exercicio::setSeriesConcluidas(unsigned int idTreino, int s, bool conc)
 {
-    if (r < 0)
-        repeticoes = 0;
-    else
-        repeticoes = r;
+    if (seriesEmSi[idTreino].empty())
+        return;
+
+    int i;
+    for (i = 0; seriesEmSi[idTreino].size() && i < s; i++)
+    {
+        seriesEmSi[idTreino][i].setConcluida(conc);
+    }
 }
 
-void Exercicio::setCarga(float c)
+void Exercicio::concluirSerie(unsigned int idTreino, int idSerie)
 {
-    if (c < 0)
-        carga = 0;
-    else
-        carga = c;
+    if (seriesEmSi[idTreino].empty())
+        return;
+    
+    seriesEmSi[idTreino][idSerie].setConcluida(true);
 }
 
-void Exercicio::setSeriesConcluidas(int s)
+//void Exercicio::incrementarSerie(unsigned int idTreino)
+//{
+//    if (getSeriesConcluidas(idTreino) < getNumeroDeSeries(idTreino))
+//        serieEmsI[idTreino]++;
+//}
+
+float Exercicio::getProgresso(unsigned int idTreino)
 {
-    seriesConcluidas = s;
+    if (getNumeroDeSeries(idTreino) == 0) 
+        return 0.0f;
+    return (float) getSeriesConcluidas(idTreino) / (float) getNumeroDeSeries(idTreino);
 }
 
-void Exercicio::incrementarSerie()
+const int Exercicio::getRepeticoes(unsigned int idTreino, unsigned int idSerie) 
 {
-    if (seriesConcluidas < series)
-        seriesConcluidas++;
+    return seriesEmSi[idTreino][idSerie].getRepeticoes();
 }
 
-float Exercicio::getProgresso() const
+
+const float Exercicio::getCarga(unsigned int idTreino, unsigned int idSerie)
 {
-    if (series == 0) return 0.0f;
-    return (float)seriesConcluidas / (float)series;
+    return seriesEmSi[idTreino][idSerie].getCarga();
 }
 
-int Exercicio::getRepeticoes() 
-{ 
-	return repeticoes; 
+void Exercicio::adicionarSerie(unsigned int idTreino, float car, unsigned int reps)
+{
+    Serie novaSerie(car, reps);
+    seriesEmSi[idTreino].push_back(novaSerie);
 }
 
-float Exercicio::getCarga() 
-{ 
-	return carga; 
+std::vector<Serie>& Exercicio::getSeries(unsigned int idTreino)
+{
+    return seriesEmSi[idTreino];
 }
+
 

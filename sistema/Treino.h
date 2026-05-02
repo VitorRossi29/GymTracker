@@ -10,6 +10,9 @@ private:
     std::string diaSemana;
     std::vector<Exercicio> exercicios;
 
+    unsigned int id;
+    static unsigned int id_acumulativo;
+
 public:
     Treino(std::string nomeP = "", std::string diaP = "");
 
@@ -23,4 +26,7 @@ public:
     std::string getDia();
 
     std::vector<Exercicio>& getExercicios();
+
+    const unsigned int getId() const;
+    static unsigned int getId_acumulativo();
 };

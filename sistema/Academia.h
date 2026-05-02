@@ -15,10 +15,7 @@ public:
 
     void adicionarExercicio(
         std::string nome = "",
-        std::string grupo = "",
-        int series = 0,
-        int repeticoes = 0,
-        float carga = 0
+        std::string grupo = ""
     );
 
     bool exercicioExiste(const std::string& nome);
@@ -28,4 +25,6 @@ public:
     std::vector<Treino>& getTreinos();
     std::vector<Exercicio>& getExercicios();
     std::vector<std::string>& getGruposMusculares();
+
+    void adicionarRecursosParaTeste();
 };
