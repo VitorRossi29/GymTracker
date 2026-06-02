@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstring>
 #include <fstream>
+#include <functional>
 
 Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
@@ -778,20 +779,65 @@ void Janela::telaLogin()
 
     static char username[100];
     static char password[100];
+    static bool errou=false;
 
 	ImGui::Text("Username");
-    ImGui::InputText("##Username", username, 100);
+    if (ImGui::InputText("##Username", username, 100))
+    {
+        errou=false;
+    }
 
 	ImGui::Text("Password");
-    ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password);
+    if (ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password))
+    {
+        errou=false;
+    }
 
     if(ImGui::Button("Login"))
     {   
-        mostrarTelaLogin=false;
+		std::ifstream arquivo("usuarios.txt");
+
+        if (arquivo.is_open())
+        {
+            std::string linha;
+            bool encontrado=false;
+            std::string hashSenha=std::to_string(std::hash<std::string>{}(password));
+
+            while (std::getline(arquivo,linha))
+            {
+                size_t pos=linha.find(';');
+                if (pos!=std::string::npos)
+                {
+                    std::string user=linha.substr(0,pos);
+                    std::string senha=linha.substr(pos+1);
+                    if (user==username && senha==hashSenha)
+                    {
+                        encontrado=true;
+                        break;
+                    }
+                }
+            }
+            arquivo.close();
+            if (!encontrado)
+            {
+				errou=true;
+            }
+            else
+            {
+                mostrarTelaLogin=false;
+            }
+        }
+    }
+
+    if(errou)
+    {
+        ImGui::SameLine(0,50);
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Login nao encontrado!");
     }
 
     if(ImGui::Button("Voltar"))
         mostrarTelaLogin=false;
+    
     ImGui::End();
 }
 
@@ -827,15 +873,17 @@ void Janela::telaCadastro()
         {
 			erroSenha=false;
 
-            std::ofstream arquivo("C:\\Users\\user\\source\\repos\\GymTracker\\menu\\usuarios.txt", std::ios::app);
+            std::ofstream arquivo("usuarios.txt", std::ios::app);
 
             if (arquivo.is_open())
             {
-                arquivo<<username<<";"<<password<<"\n";
+				std::string hashSenha = std::to_string(std::hash<std::string>{}(password));
+                arquivo<<username<<";"<<hashSenha<<"\n";
                 arquivo.close();
             }
 
             mostrarTelaCadastro=false;
+			mostrarTelaInicial=true;
         }
     }
 
