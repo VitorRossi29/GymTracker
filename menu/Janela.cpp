@@ -259,7 +259,8 @@ void Janela::telaCadastrarExercicio()
 
         sistemaAcademia->adicionarExercicio(
             nomeEx,
-            listaMusculos[itemAtual]/*,
+            listaMusculos[itemAtual],
+            idAtual/*,
             series,
             repeticoes,
             carga*/
@@ -806,18 +807,21 @@ void Janela::telaLogin()
             while (std::getline(arquivo,linha))
             {
                 size_t pos=linha.find(';');
-                if (pos!=std::string::npos)
+				size_t pos2=linha.find(';',pos+1);
+
+                if (pos!=std::string::npos && pos2!=std::string::npos)
                 {
                     std::string user=linha.substr(0,pos);
-                    std::string senha=linha.substr(pos+1);
+                    std::string senha=linha.substr(pos+1,pos2-pos-1);
                     if (user==username && senha==hashSenha)
                     {
+                        idAtual=std::stoi(linha.substr(pos2+1));
                         encontrado=true;
                         break;
                     }
                 }
             }
-            arquivo.close();
+            
             if (!encontrado)
             {
 				errou=true;
@@ -826,6 +830,7 @@ void Janela::telaLogin()
             {
                 mostrarTelaLogin=false;
             }
+            arquivo.close();
         }
     }
 
@@ -865,6 +870,25 @@ void Janela::telaCadastro()
 
     if(ImGui::Button("Cadastrar"))
     {
+		std::ifstream arquivoLeitura("usuarios.txt");
+        int maiorId=0;
+        std::string linha;
+
+        while (std::getline(arquivoLeitura, linha))
+        {
+            size_t pos1=linha.find(';');
+            size_t pos2=linha.find(';',pos1+1);
+
+            if (pos1!=std::string::npos && pos2!=std::string::npos)
+            {
+                int id=std::stoi(linha.substr(pos2+1));
+
+                if (id>maiorId)
+                    maiorId=id;
+            }
+        } 
+		arquivoLeitura.close();
+
         if(strcmp(password, confirmPassword)!=0)
         {
 			erroSenha=true;
@@ -873,13 +897,13 @@ void Janela::telaCadastro()
         {
 			erroSenha=false;
 
-            std::ofstream arquivo("usuarios.txt", std::ios::app);
+            std::ofstream arquivoEscrita("usuarios.txt", std::ios::app);
 
-            if (arquivo.is_open())
+            if (arquivoEscrita.is_open())
             {
 				std::string hashSenha = std::to_string(std::hash<std::string>{}(password));
-                arquivo<<username<<";"<<hashSenha<<"\n";
-                arquivo.close();
+                arquivoEscrita<<username<<";"<<hashSenha<<";"<<maiorId+1<<"\n";
+                arquivoEscrita.close();
             }
 
             mostrarTelaCadastro=false;

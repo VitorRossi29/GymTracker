@@ -1,6 +1,7 @@
 #include "Academia.h"
 #include "stdlib.h"
 #include "time.h"
+#include <fstream>
 
 Academia::Academia()
 {
@@ -33,6 +34,18 @@ void Academia::adicionarExercicio(
 
     Exercicio novoExercicio(nome, grupo);
     todosExercicios.push_back(novoExercicio);
+}
+
+void Academia::adicionarExercicio(std::string nome,std::string grupo,int id)
+{
+    if (exercicioExiste(nome))
+        return;
+
+    Exercicio novoExercicio(nome,grupo);
+    todosExercicios.push_back(novoExercicio);
+
+    std::ofstream arquivo("exercicios.txt",std::ios::app);
+	arquivo <<nome<<";"<<grupo<<";"<<id<<std::endl;
 }
 
 std::vector<Exercicio>& Academia::getExercicios()

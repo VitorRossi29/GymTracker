@@ -10,6 +10,8 @@ class Janela
 private:
     Academia* sistemaAcademia;
 
+    int idAtual;
+
     int itemAtual;
 	bool mostrarTelaInicial;
     bool mostrarTelaCadastro;

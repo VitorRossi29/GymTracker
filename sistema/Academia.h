@@ -16,7 +16,9 @@ public:
     void adicionarExercicio(
         std::string nome = "",
         std::string grupo = ""
-    );
+	);//para exercícios padrão, sem salvar em arquivo
+
+    void Academia::adicionarExercicio(std::string nome, std::string grupo, int id);
 
     bool exercicioExiste(const std::string& nome);
 
