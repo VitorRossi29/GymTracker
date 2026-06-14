@@ -1,0 +1,28 @@
+-1;Treino de Peitoral e Triceps;Terca
+-1;Treino de Costas e Biceps;Segunda
+-1;Treino de Pernas e Abdomen;Quarta
+1;TREINO DAS COSTAS;Segunda
+-1;Treino de Peitoral e Triceps;Terca
+-1;Treino de Costas e Biceps;Segunda
+-1;Treino de Pernas e Abdomen;Quarta
+-1;Treino de Peitoral e Triceps;Terca
+-1;Treino de Costas e Biceps;Segunda
+-1;Treino de Pernas e Abdomen;Quarta
+-1;0;Treino de Peitoral e Triceps;Terca
+-1;0;Treino de Peitoral e Triceps;Supino Reto;Peitoral
+-1;0;Treino de Peitoral e Triceps;Supino Inclinado;Peitoral
+-1;0;Treino de Peitoral e Triceps;Elevacao Lateral;Ombros
+-1;0;Treino de Peitoral e Triceps;Triceps na Polia;Triceps
+-1;0;Treino de Peitoral e Triceps;Triceps Frances;Triceps
+-1;1;Treino de Costas e Biceps;Segunda
+-1;1;Treino de Costas e Biceps;Puxada Alta;Costas
+-1;1;Treino de Costas e Biceps;Remada na Polia;Costas
+-1;1;Treino de Costas e Biceps;Desenvolvimento de Ombros;Ombros
+-1;1;Treino de Costas e Biceps;Rosca Biceps;Biceps
+-1;1;Treino de Costas e Biceps;Rosca Scott;Biceps
+-1;2;Treino de Pernas e Abdomen;Quarta
+-1;2;Treino de Pernas e Abdomen;LegPress;Pernas
+-1;2;Treino de Pernas e Abdomen;Cadeira Extensora;Pernas
+-1;2;Treino de Pernas e Abdomen;Mesa Flexora;Pernas
+-1;2;Treino de Pernas e Abdomen;Agachamento;Pernas
+-1;2;Treino de Pernas e Abdomen;Abdominal;Abdomen

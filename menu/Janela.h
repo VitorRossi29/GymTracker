@@ -36,6 +36,8 @@ private:
 	int treinoSelecionado;
 	std::vector<int> exerciciosConcluidos;
 
+    std::string usuarioLogado;
+
 public:
     Janela(Academia* sistema);
 

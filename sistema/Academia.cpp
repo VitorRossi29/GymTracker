@@ -2,6 +2,9 @@
 #include "stdlib.h"
 #include "time.h"
 #include <fstream>
+#include <sstream>
+#include <filesystem>
+#include <iostream>
 
 Academia::Academia()
 {
@@ -55,7 +58,75 @@ std::vector<Exercicio>& Academia::getExercicios()
 
 void Academia::adicionarTreino(Treino t)
 {
+    //std::cout << "Entrou em adicionarTreino\n";
+    
     treinos.push_back(t);
+
+    std::ofstream arq(
+        "../../../dados/treinos.txt",
+        std::ios::app
+    );
+
+    if (arq.is_open())
+    {
+        //std::cout << "Arquivo aberto\n";
+
+        arq
+            << t.getIdUsuario() << ";"
+            << t.getId() << ";"
+            << t.getNome() << ";"
+            << t.getDia() << "\n";
+
+        //std::cout << "Escreveu no arquivo\n";
+
+    }
+    else
+    {
+       // std::cout << "Nao conseguiu abrir o arquivo\n";
+    }
+
+    //Registra o id do usuario, o nome do treino e o dia do treino no arquivo de registro de treinos
+
+
+    std::ofstream arqExercicios(
+        "../../../dados/treinos_exercicios.txt",
+        std::ios::app
+    );
+
+    for (auto& ex : t.getExercicios() )
+    {
+        arq
+            << t.getIdUsuario() << ";"
+            << t.getId() << ";"
+            << t.getNome() << ";"
+            << ex.getNome() << ";"
+            << ex.getGrupoMuscular()
+            << "\n";
+    }
+
+    std::ofstream arqSeries(
+        "../../../dados/series.txt",
+        std::ios::app
+    );
+
+    for (auto& ex : t.getExercicios())
+    {
+        auto& lista = ex.getSeries(t.getId());
+
+        for (auto& serie : lista)
+        {
+            arqSeries
+
+                << t.getIdUsuario() << ";"
+                << t.getId() << ";"
+                << t.getNome() << ";"
+                << ex.getNome() << ";"
+                << serie.getCarga() << ";"
+                << serie.getRepeticoes()
+
+                << "\n";
+        }
+    }
 }
 
 std::vector<Treino>& Academia::getTreinos()
@@ -133,4 +204,143 @@ void Academia::adicionarRecursosParaTeste()
         }
     }
     adicionarTreino(treinoDePernasParaTeste);
+}
+
+void Academia::carregarTreinos(int idUsuario)
+{
+    std::cout << std::filesystem::current_path().string() << std::endl;
+
+    treinos.clear();
+    std::ifstream arq("../../../dados/treinos.txt");
+
+    std::string linha;
+
+    std::string idTreino;
+    std::string nomeTreino;
+    std::string diaTreino;
+
+    while (std::getline(arq, linha))
+    {
+        size_t p1 = linha.find(';');
+        size_t p2 = linha.find(';', p1 + 1);
+        size_t p21 = linha.find(';', p2 + 1);
+
+        std::string idUsuarioTreino = linha.substr(0, p1);
+        std::string idTreino = linha.substr(p1 + 1, p2 - p1 - 1);
+        std::string nomeTreino = linha.substr(p2 + 1, p21 - p2 - 1);
+        std::string diaTreino = linha.substr(p21 + 1);
+
+        if (std::stoi(idUsuarioTreino) == idUsuario)
+        {
+            Treino t(nomeTreino, diaTreino, std::stoi(idTreino));
+            treinos.push_back(t);
+        }
+    }
+
+    std::string linhaExercicio;
+
+    std::string idUsuarioExercicio;
+    std::string idTreinoAssociado;
+    std::string nomeDoTreinoDoExercicio;
+    std::string nomeExercicio;
+    std::string grupoMuscular;
+
+    std::ifstream arqExer("../../../dados/treinos_exercicios.txt");
+
+    while (std::getline(arqExer, linhaExercicio))
+    {
+        size_t p3 = linhaExercicio.find(';');
+        size_t p4 = linhaExercicio.find(';', p3 + 1);
+        size_t p5 = linhaExercicio.find(';', p4 + 1);
+        size_t p6 = linhaExercicio.find(';', p5 + 1);
+
+        std::string idUsuarioExercicio = linhaExercicio.substr(0, p3);
+        std::string idTreinoAssociado = linhaExercicio.substr(p3 + 1, p4 - p3 - 1);
+        std::string nomeDoTreinoDoExercicio = linhaExercicio.substr(p4 + 1, p5 - p4 - 1);
+        std::string nomeExercicio = linhaExercicio.substr(p5 + 1, p6 - p5 - 1);
+        std::string grupoMuscular = linhaExercicio.substr(p6 + 1);
+
+        if (std::stoi(idUsuarioExercicio) == idUsuario)
+        {
+            for (int i = 0; i < treinos.size(); i++)
+            {
+                if (std::stoi(idTreinoAssociado) == treinos[i].getId())
+                {
+                    bool exercicioJaExiste = false;
+                    for (auto& ex : todosExercicios)
+                    {
+                        if (ex.getNome() == nomeExercicio)
+                        {
+                            treinos[i].adicionarExercicio(ex);
+                            exercicioJaExiste = true;
+                            break;
+                        }
+                    }
+
+                    if (!exercicioJaExiste)
+                    {
+                        Exercicio exercicioEncontrado(
+                            nomeExercicio,
+                            grupoMuscular
+                        );
+
+                        treinos[i].adicionarExercicio(exercicioEncontrado);
+                    }
+                    
+                }
+            }
+        }
+
+    }
+
+    std::string linhaSerie;
+
+    std::string idUsuarioSerie;
+    std::string idTreinoAssociadoSerie;
+    std::string nomeDoTreinoDaSerie;
+    std::string nomeExercicioDaSerie;
+    std::string carga;
+    std::string repeticoes;
+
+    std::ifstream arqSeries("../../../dados/series.txt");
+
+    while (std::getline(arqSeries, linhaSerie))
+    {
+        size_t p7 = linhaSerie.find(';');
+        size_t p8 = linhaSerie.find(';', p7 + 1);
+        size_t p9 = linhaSerie.find(';', p8 + 1);
+        size_t p10 = linhaSerie.find(';', p9 + 1);
+        size_t p11 = linhaSerie.find(';', p10 + 1);
+
+        std::string idUsuarioSerie = linhaSerie.substr(0, p7);
+        std::string idTreinoAssociadoSerie = linhaSerie.substr(p7 + 1, p8 - p7 - 1);
+        std::string nomeDoTreinoDaSerie = linhaSerie.substr(p8 + 1, p9 - p8 - 1);
+        std::string nomeExercicioDaSerie = linhaSerie.substr(p9 + 1, p10 - p9 - 1);
+        std::string carga = linhaSerie.substr(p10 + 1, p11 - p10 - 1);
+        std::string repeticoes = linhaSerie.substr(p11 + 1);
+
+        if (std::stoi(idUsuarioSerie) == idUsuario) //Verifica mesmo usuario
+        {
+            for (auto& treino : treinos)
+            {
+                if (treino.getId() == std::stoi(idTreinoAssociadoSerie))    //Verifica mesmo treino
+                {
+                    for (auto& ex : treino.getExercicios())
+                    {
+                        if (ex.getNome() == nomeExercicioDaSerie)       //Verifica mesmo exercicio
+                        {
+                            ex.adicionarSerie(
+                                treino.getId(),
+                                std::stof(carga),
+                                std::stoi(repeticoes)
+                            );
+
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }

@@ -3,6 +3,9 @@
 #include <cstring>
 #include <fstream>
 #include <functional>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
@@ -22,7 +25,9 @@ Janela::Janela(Academia* sistema) :
 
     exercicioSelecionado(0),
     nomeTreino(""),
-    treinoSelecionado(-1)
+    treinoSelecionado(-1),
+
+    usuarioLogado("")
 
 {
 }
@@ -479,6 +484,9 @@ void Janela::telaCriarTreino()
         {
             treinoTemp.setNome(nomeTreino);
             treinoTemp.setDia(dias[diaSelecionado]);
+            treinoTemp.setIdUsuario(idAtual);
+
+            std::cout << "idAtual = " << idAtual << std::endl;
 
             sistemaAcademia->adicionarTreino(treinoTemp);
 
@@ -617,12 +625,37 @@ void Janela::telaRealizarTreino()
 
         if (ImGui::Button("Finalizar"))
         {
+            int series_totais = 0;
+            int series_concluidas = 0;
             for (int i = 0; i < exs.size(); i++)
             {
+                series_totais += exs[i].getNumeroDeSeries(treino.getId());
+                series_concluidas += exs[i].getSeriesConcluidas(treino.getId());
                 exs[i].setSeriesConcluidas(treino.getId(), exs[i].getNumeroDeSeries(treino.getId()), false);
             }
             treinoSelecionado = -1;
             exerciciosConcluidos.clear();
+
+            std::time_t agora = std::time(nullptr);
+            std::tm* tempoLocal = std::localtime(&agora);
+
+            std::ostringstream oss;
+            oss << std::put_time(tempoLocal, "%d/%m/%Y %H:%M:%S");
+
+            std::string dataHora = oss.str();
+
+            std::ofstream arq(
+                "../../../dados/historico.txt",
+                std::ios::app
+            );
+
+            arq
+                << treino.getIdUsuario() << ";"
+                << treino.getNome() << ";"
+                << series_totais << ";"
+                << series_concluidas << ";"
+                << dataHora
+                << "\n";
         }
     }
 
@@ -806,7 +839,7 @@ void Janela::telaLogin()
 
             while (std::getline(arquivo,linha))
             {
-                size_t pos=linha.find(';');
+                size_t pos = linha.find(';', 0);
 				size_t pos2=linha.find(';',pos+1);
 
                 if (pos!=std::string::npos && pos2!=std::string::npos)
@@ -816,6 +849,7 @@ void Janela::telaLogin()
                     if (user==username && senha==hashSenha)
                     {
                         idAtual=std::stoi(linha.substr(pos2+1));
+                        sistemaAcademia->carregarTreinos(idAtual);
                         encontrado=true;
                         break;
                     }

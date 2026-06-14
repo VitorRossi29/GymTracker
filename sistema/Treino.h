@@ -13,8 +13,10 @@ private:
     unsigned int id;
     static unsigned int id_acumulativo;
 
+    int idUsuario;
+
 public:
-    Treino(std::string nomeP = "", std::string diaP = "");
+    Treino(std::string nomeP = "", std::string diaP = "", int usuario = -1);
 
     void adicionarExercicio(const Exercicio& e);
 	void tiraExercicio(int pos);
@@ -29,4 +31,7 @@ public:
 
     const unsigned int getId() const;
     static unsigned int getId_acumulativo();
+
+    void setIdUsuario(int usuario);
+    int getIdUsuario() const;
 };

@@ -29,4 +29,6 @@ public:
     std::vector<std::string>& getGruposMusculares();
 
     void adicionarRecursosParaTeste();
+
+    void carregarTreinos(int idUsuario);
 };

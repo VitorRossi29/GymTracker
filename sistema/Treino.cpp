@@ -2,8 +2,9 @@
 
 unsigned int Treino::id_acumulativo = 0;
 
-Treino::Treino(std::string nomeP, std::string diaP) :
-    id(id_acumulativo++)
+Treino::Treino(std::string nomeP, std::string diaP, int usuario) :
+    id(id_acumulativo++),
+    idUsuario(usuario)
 {
     nome = nomeP;
     diaSemana = diaP;
@@ -53,4 +54,14 @@ const unsigned int Treino::getId() const
 unsigned int Treino::getId_acumulativo()
 {
     return id_acumulativo;
+}
+
+void Treino::setIdUsuario(int usuario)
+{
+    idUsuario = usuario;
+}
+
+int Treino::getIdUsuario() const
+{
+    return idUsuario;
 }
