@@ -265,15 +265,11 @@ void Janela::telaCadastrarExercicio()
         sistemaAcademia->adicionarExercicio(
             nomeEx,
             listaMusculos[itemAtual],
-            idAtual/*,
-            series,
-            repeticoes,
-            carga*/
+            idAtual
         );
 
         nome[0] = '\0';
-       /* series = repeticoes = 0;
-        carga = 0;*/
+       
         itemAtual = 0;
 
         mostrarTelaCadastrarExercicio = false;
@@ -301,12 +297,6 @@ void Janela::telaMostrarExercicios()
     {
         ImGui::Text("Nome: %s", e.getNome().c_str());
         ImGui::Text("Grupo: %s", e.getGrupoMuscular().c_str());
-
-        /*ImGui::Text("Series: %d | Repeticoes: %d | Carga: %.2f",
-            e.getSeries(),
-            e.getRepeticoes(),
-            e.getCarga()
-        );*/
 
         ImGui::Separator();
     }
@@ -813,7 +803,7 @@ void Janela::telaLogin()
 
     static char username[100];
     static char password[100];
-    static bool errou=false;
+    static bool errou = false;
 
 	ImGui::Text("Username");
     if (ImGui::InputText("##Username", username, 100))
@@ -829,28 +819,28 @@ void Janela::telaLogin()
 
     if(ImGui::Button("Login"))
     {   
-		std::ifstream arquivo("usuarios.txt");
+		std::ifstream arquivo("../../../dados/usuarios.txt");
 
         if (arquivo.is_open())
         {
             std::string linha;
-            bool encontrado=false;
-            std::string hashSenha=std::to_string(std::hash<std::string>{}(password));
+            bool encontrado = false;
+            std::string hashSenha = std::to_string(std::hash<std::string>{}(password));
 
             while (std::getline(arquivo,linha))
             {
                 size_t pos = linha.find(';', 0);
-				size_t pos2=linha.find(';',pos+1);
+				size_t pos2 = linha.find(';',pos+1);
 
-                if (pos!=std::string::npos && pos2!=std::string::npos)
+                if (pos != std::string::npos && pos2 != std::string::npos)
                 {
-                    std::string user=linha.substr(0,pos);
-                    std::string senha=linha.substr(pos+1,pos2-pos-1);
-                    if (user==username && senha==hashSenha)
+                    std::string user = linha.substr(0,pos);
+                    std::string senha = linha.substr(pos+1,pos2 - pos - 1);
+                    if (user == username && senha == hashSenha)
                     {
-                        idAtual=std::stoi(linha.substr(pos2+1));
+                        idAtual = std::stoi(linha.substr(pos2 + 1));
                         sistemaAcademia->carregarTreinos(idAtual);
-                        encontrado=true;
+                        encontrado = true;
                         break;
                     }
                 }
@@ -874,8 +864,11 @@ void Janela::telaLogin()
         ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "Login nao encontrado!");
     }
 
-    if(ImGui::Button("Voltar"))
-        mostrarTelaLogin=false;
+    if (ImGui::Button("Voltar"))
+    {
+        mostrarTelaLogin = false;
+        mostrarTelaInicial = true;
+    }
     
     ImGui::End();
 }
@@ -904,7 +897,7 @@ void Janela::telaCadastro()
 
     if(ImGui::Button("Cadastrar"))
     {
-		std::ifstream arquivoLeitura("usuarios.txt");
+		std::ifstream arquivoLeitura("../../../dados/usuarios.txt");
         int maiorId=0;
         std::string linha;
 
@@ -931,7 +924,7 @@ void Janela::telaCadastro()
         {
 			erroSenha=false;
 
-            std::ofstream arquivoEscrita("usuarios.txt", std::ios::app);
+            std::ofstream arquivoEscrita("../../../dados/usuarios.txt", std::ios::app);
 
             if (arquivoEscrita.is_open())
             {
@@ -948,7 +941,10 @@ void Janela::telaCadastro()
     ImGui::SameLine(0,20);
 
     if(ImGui::Button("Voltar"))
-        mostrarTelaCadastro=false;
+    {
+        mostrarTelaCadastro = false;
+        mostrarTelaInicial = true;
+    }
 
     if (erroSenha)
     {

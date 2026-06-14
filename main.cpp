@@ -20,7 +20,7 @@ int main()
 
     GLFWwindow* window = glfwCreateWindow(
         1280, 720,
-        "Meu Projeto",
+        "GymTracker",
         NULL,
         NULL
     );

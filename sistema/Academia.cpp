@@ -13,8 +13,6 @@ Academia::Academia()
         "Biceps", "Triceps", "Pernas",
         "Panturrilha", "Abdomem"
     };
-
-    adicionarRecursosParaTeste();
 }
 
 bool Academia::exercicioExiste(const std::string& nome)
@@ -47,7 +45,7 @@ void Academia::adicionarExercicio(std::string nome,std::string grupo,int id)
     Exercicio novoExercicio(nome,grupo);
     todosExercicios.push_back(novoExercicio);
 
-    std::ofstream arquivo("exercicios.txt",std::ios::app);
+    std::ofstream arquivo("../../../dados/exercicios.txt",std::ios::app);
 	arquivo <<nome<<";"<<grupo<<";"<<id<<std::endl;
 }
 
@@ -58,8 +56,6 @@ std::vector<Exercicio>& Academia::getExercicios()
 
 void Academia::adicionarTreino(Treino t)
 {
-    //std::cout << "Entrou em adicionarTreino\n";
-    
     treinos.push_back(t);
 
     std::ofstream arq(
@@ -67,26 +63,21 @@ void Academia::adicionarTreino(Treino t)
         std::ios::app
     );
 
+    if (t.getIdUsuario() == -1)
+        return;
+
+    //Nao salvar e ressalvar os treinos padroes
+
     if (arq.is_open())
     {
-        //std::cout << "Arquivo aberto\n";
-
         arq
             << t.getIdUsuario() << ";"
             << t.getId() << ";"
             << t.getNome() << ";"
             << t.getDia() << "\n";
-
-        //std::cout << "Escreveu no arquivo\n";
-
-    }
-    else
-    {
-       // std::cout << "Nao conseguiu abrir o arquivo\n";
     }
 
-    //Registra o id do usuario, o nome do treino e o dia do treino no arquivo de registro de treinos
-
+    arq.close();
 
     std::ofstream arqExercicios(
         "../../../dados/treinos_exercicios.txt",
@@ -95,14 +86,15 @@ void Academia::adicionarTreino(Treino t)
 
     for (auto& ex : t.getExercicios() )
     {
-        arq
+        arqExercicios
             << t.getIdUsuario() << ";"
             << t.getId() << ";"
             << t.getNome() << ";"
             << ex.getNome() << ";"
-            << ex.getGrupoMuscular()
-            << "\n";
+            << ex.getGrupoMuscular() << "\n";
     }
+
+    arqExercicios.close();
 
     std::ofstream arqSeries(
         "../../../dados/series.txt",
@@ -116,17 +108,16 @@ void Academia::adicionarTreino(Treino t)
         for (auto& serie : lista)
         {
             arqSeries
-
                 << t.getIdUsuario() << ";"
                 << t.getId() << ";"
                 << t.getNome() << ";"
                 << ex.getNome() << ";"
                 << serie.getCarga() << ";"
-                << serie.getRepeticoes()
-
-                << "\n";
+                << serie.getRepeticoes() << "\n";
         }
     }
+
+    arqSeries.close();
 }
 
 std::vector<Treino>& Academia::getTreinos()
@@ -211,6 +202,9 @@ void Academia::carregarTreinos(int idUsuario)
     std::cout << std::filesystem::current_path().string() << std::endl;
 
     treinos.clear();
+
+    adicionarRecursosParaTeste();
+
     std::ifstream arq("../../../dados/treinos.txt");
 
     std::string linha;
@@ -225,16 +219,22 @@ void Academia::carregarTreinos(int idUsuario)
         size_t p2 = linha.find(';', p1 + 1);
         size_t p21 = linha.find(';', p2 + 1);
 
-        std::string idUsuarioTreino = linha.substr(0, p1);
-        std::string idTreino = linha.substr(p1 + 1, p2 - p1 - 1);
-        std::string nomeTreino = linha.substr(p2 + 1, p21 - p2 - 1);
-        std::string diaTreino = linha.substr(p21 + 1);
-
-        if (std::stoi(idUsuarioTreino) == idUsuario)
+        if (p1 != std::string::npos &&
+            p2 != std::string::npos &&
+            p21 != std::string::npos)
         {
-            Treino t(nomeTreino, diaTreino, std::stoi(idTreino));
-            treinos.push_back(t);
+            std::string idUsuarioTreino = linha.substr(0, p1);
+            std::string idTreino = linha.substr(p1 + 1, p2 - p1 - 1);
+            std::string nomeTreino = linha.substr(p2 + 1, p21 - p2 - 1);
+            std::string diaTreino = linha.substr(p21 + 1);
+
+            if (std::stoi(idUsuarioTreino) == idUsuario)
+            {
+                Treino t(nomeTreino, diaTreino, std::stoi(idTreino));
+                treinos.push_back(t);
+            }
         }
+        
     }
 
     std::string linhaExercicio;
@@ -254,39 +254,59 @@ void Academia::carregarTreinos(int idUsuario)
         size_t p5 = linhaExercicio.find(';', p4 + 1);
         size_t p6 = linhaExercicio.find(';', p5 + 1);
 
-        std::string idUsuarioExercicio = linhaExercicio.substr(0, p3);
-        std::string idTreinoAssociado = linhaExercicio.substr(p3 + 1, p4 - p3 - 1);
-        std::string nomeDoTreinoDoExercicio = linhaExercicio.substr(p4 + 1, p5 - p4 - 1);
-        std::string nomeExercicio = linhaExercicio.substr(p5 + 1, p6 - p5 - 1);
-        std::string grupoMuscular = linhaExercicio.substr(p6 + 1);
-
-        if (std::stoi(idUsuarioExercicio) == idUsuario)
+        if (p3 != std::string::npos &&
+            p4 != std::string::npos &&
+            p5 != std::string::npos &&
+            p6 != std::string::npos)
         {
-            for (int i = 0; i < treinos.size(); i++)
+            std::string idUsuarioExercicio = linhaExercicio.substr(0, p3);
+            std::string idTreinoAssociado = linhaExercicio.substr(p3 + 1, p4 - p3 - 1);
+            std::string nomeDoTreinoDoExercicio = linhaExercicio.substr(p4 + 1, p5 - p4 - 1);
+            std::string nomeExercicio = linhaExercicio.substr(p5 + 1, p6 - p5 - 1);
+            std::string grupoMuscular = linhaExercicio.substr(p6 + 1);
+
+            if (std::stoi(idUsuarioExercicio) == idUsuario)
             {
-                if (std::stoi(idTreinoAssociado) == treinos[i].getId())
+                for (int i = 0; i < treinos.size(); i++)
                 {
-                    bool exercicioJaExiste = false;
-                    for (auto& ex : todosExercicios)
+                    if (std::stoi(idTreinoAssociado) == treinos[i].getId())
                     {
-                        if (ex.getNome() == nomeExercicio)
+                        /*bool exercicioJaExiste = false;
+                        for (auto& ex : todosExercicios)
                         {
-                            treinos[i].adicionarExercicio(ex);
-                            exercicioJaExiste = true;
-                            break;
+                            if (ex.getNome() == nomeExercicio)
+                            {
+                                treinos[i].adicionarExercicio(ex);
+                                exercicioJaExiste = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (!exercicioJaExiste)
-                    {
-                        Exercicio exercicioEncontrado(
-                            nomeExercicio,
-                            grupoMuscular
-                        );
+                        if (!exercicioJaExiste)
+                        {
+                            Exercicio exercicioEncontrado(
+                                nomeExercicio,
+                                grupoMuscular
+                            );
 
-                        treinos[i].adicionarExercicio(exercicioEncontrado);
+                            adicionarExercicio(exercicioEncontrado);
+
+                            treinos[i].adicionarExercicio(exercicioEncontrado);
+                        }*/
+
+                        adicionarExercicio(nomeExercicio, grupoMuscular, std::stoi(idUsuarioExercicio));
+
+                        for (auto& ex : todosExercicios)
+                        {
+                            if (ex.getNome() == nomeExercicio)
+                            {
+                                treinos[i].adicionarExercicio(ex);
+                                break;
+                            }
+                        }
+
+                        
                     }
-                    
                 }
             }
         }
@@ -312,35 +332,42 @@ void Academia::carregarTreinos(int idUsuario)
         size_t p10 = linhaSerie.find(';', p9 + 1);
         size_t p11 = linhaSerie.find(';', p10 + 1);
 
-        std::string idUsuarioSerie = linhaSerie.substr(0, p7);
-        std::string idTreinoAssociadoSerie = linhaSerie.substr(p7 + 1, p8 - p7 - 1);
-        std::string nomeDoTreinoDaSerie = linhaSerie.substr(p8 + 1, p9 - p8 - 1);
-        std::string nomeExercicioDaSerie = linhaSerie.substr(p9 + 1, p10 - p9 - 1);
-        std::string carga = linhaSerie.substr(p10 + 1, p11 - p10 - 1);
-        std::string repeticoes = linhaSerie.substr(p11 + 1);
-
-        if (std::stoi(idUsuarioSerie) == idUsuario) //Verifica mesmo usuario
+        if (p7 != std::string::npos &&
+            p8 != std::string::npos &&
+            p9 != std::string::npos &&
+            p10 != std::string::npos &&
+            p11 != std::string::npos)
         {
-            for (auto& treino : treinos)
-            {
-                if (treino.getId() == std::stoi(idTreinoAssociadoSerie))    //Verifica mesmo treino
-                {
-                    for (auto& ex : treino.getExercicios())
-                    {
-                        if (ex.getNome() == nomeExercicioDaSerie)       //Verifica mesmo exercicio
-                        {
-                            ex.adicionarSerie(
-                                treino.getId(),
-                                std::stof(carga),
-                                std::stoi(repeticoes)
-                            );
+            std::string idUsuarioSerie = linhaSerie.substr(0, p7);
+            std::string idTreinoAssociadoSerie = linhaSerie.substr(p7 + 1, p8 - p7 - 1);
+            std::string nomeDoTreinoDaSerie = linhaSerie.substr(p8 + 1, p9 - p8 - 1);
+            std::string nomeExercicioDaSerie = linhaSerie.substr(p9 + 1, p10 - p9 - 1);
+            std::string carga = linhaSerie.substr(p10 + 1, p11 - p10 - 1);
+            std::string repeticoes = linhaSerie.substr(p11 + 1);
 
-                            break;
+            if (std::stoi(idUsuarioSerie) == idUsuario) //Verifica mesmo usuario
+            {
+                for (auto& treino : treinos)
+                {
+                    if (treino.getId() == std::stoi(idTreinoAssociadoSerie))    //Verifica mesmo treino
+                    {
+                        for (auto& ex : treino.getExercicios())
+                        {
+                            if (ex.getNome() == nomeExercicioDaSerie)       //Verifica mesmo exercicio
+                            {
+                                ex.adicionarSerie(
+                                    treino.getId(),
+                                    std::stof(carga),
+                                    std::stoi(repeticoes)
+                                );
+
+                                break;
+                            }
                         }
                     }
                 }
             }
         }
 
-    }
+    }       //while
 }

@@ -49,3 +49,32 @@
 -1;2;Treino de Pernas e Abdomen;Abdominal;19;11
 -1;2;Treino de Pernas e Abdomen;Abdominal;13;10
 -1;2;Treino de Pernas e Abdomen;Abdominal;11;9
+1;3;Treino do Full Body do Vitor;Supino Reto;0;20
+1;3;Treino do Full Body do Vitor;Supino Reto;22;12
+1;3;Treino do Full Body do Vitor;Supino Reto;25;10
+1;3;Treino do Full Body do Vitor;Supino Reto;27;6
+1;3;Treino do Full Body do Vitor;Supino Reto;30;4
+1;3;Treino do Full Body do Vitor;Triceps na Polia;30;12
+1;3;Treino do Full Body do Vitor;Triceps na Polia;30;12
+1;3;Treino do Full Body do Vitor;Triceps na Polia;35;10
+1;3;Treino do Full Body do Vitor;Triceps na Polia;35;10
+1;3;Treino do Full Body do Vitor;Puxada Alta;40;12
+1;3;Treino do Full Body do Vitor;Puxada Alta;50;12
+1;3;Treino do Full Body do Vitor;Puxada Alta;60;8
+1;3;Treino do Full Body do Vitor;Puxada Alta;60;8
+1;3;Treino do Full Body do Vitor;Rosca Biceps;16;8
+1;3;Treino do Full Body do Vitor;Rosca Biceps;16;8
+1;3;Treino do Full Body do Vitor;Rosca Biceps;14;8
+1;3;Treino do Full Body do Vitor;Cadeira Extensora;50;12
+1;3;Treino do Full Body do Vitor;Cadeira Extensora;50;12
+1;3;Treino do Full Body do Vitor;Cadeira Extensora;60;12
+1;3;Treino do Full Body do Vitor;Mesa Flexora;50;12
+1;3;Treino do Full Body do Vitor;Mesa Flexora;50;12
+1;3;Treino do Full Body do Vitor;Mesa Flexora;60;12
+2;3;Treino de pilates;Exercicio pilates 2;100;10
+2;3;Treino de pilates;Aquele com a bola de pilates;40;20
+2;3;Treino de pilates;Aquele com a bola de pilates;30;8
+2;3;Treino de pilates;Pirueta acrobatico de pilates;5;12
+2;3;Treino de pilates;Pirueta acrobatico de pilates;15;23
+1;4;Treino Voador;Elevacao Lateral;10;24
+1;4;Treino Voador;Desenvolvimento de Ombros;31;41

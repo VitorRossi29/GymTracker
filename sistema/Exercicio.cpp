@@ -71,12 +71,6 @@ void Exercicio::concluirSerie(unsigned int idTreino, int idSerie)
     seriesEmSi[idTreino][idSerie].setConcluida(true);
 }
 
-//void Exercicio::incrementarSerie(unsigned int idTreino)
-//{
-//    if (getSeriesConcluidas(idTreino) < getNumeroDeSeries(idTreino))
-//        serieEmsI[idTreino]++;
-//}
-
 float Exercicio::getProgresso(unsigned int idTreino)
 {
     if (getNumeroDeSeries(idTreino) == 0) 
