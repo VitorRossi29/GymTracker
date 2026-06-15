@@ -11,7 +11,8 @@ Academia::Academia()
     gruposMusculares = {
         "Peitoral", "Costas", "Ombros",
         "Biceps", "Triceps", "Pernas",
-        "Panturrilha", "Abdomem"
+        "Panturrilha", "Abdomem", 
+        "Cardio" // AQUI: Nova categoria
     };
 }
 
@@ -271,29 +272,6 @@ void Academia::carregarTreinos(int idUsuario)
                 {
                     if (std::stoi(idTreinoAssociado) == treinos[i].getId())
                     {
-                        /*bool exercicioJaExiste = false;
-                        for (auto& ex : todosExercicios)
-                        {
-                            if (ex.getNome() == nomeExercicio)
-                            {
-                                treinos[i].adicionarExercicio(ex);
-                                exercicioJaExiste = true;
-                                break;
-                            }
-                        }
-
-                        if (!exercicioJaExiste)
-                        {
-                            Exercicio exercicioEncontrado(
-                                nomeExercicio,
-                                grupoMuscular
-                            );
-
-                            adicionarExercicio(exercicioEncontrado);
-
-                            treinos[i].adicionarExercicio(exercicioEncontrado);
-                        }*/
-
                         adicionarExercicio(nomeExercicio, grupoMuscular, std::stoi(idUsuarioExercicio));
 
                         for (auto& ex : todosExercicios)
@@ -304,8 +282,6 @@ void Academia::carregarTreinos(int idUsuario)
                                 break;
                             }
                         }
-
-                        
                     }
                 }
             }
@@ -331,6 +307,9 @@ void Academia::carregarTreinos(int idUsuario)
         size_t p9 = linhaSerie.find(';', p8 + 1);
         size_t p10 = linhaSerie.find(';', p9 + 1);
         size_t p11 = linhaSerie.find(';', p10 + 1);
+        
+        // AQUI: Adicionado o ponteiro p12 para encontrar a nova coluna de minutos
+        size_t p12 = linhaSerie.find(';', p11 + 1);
 
         if (p7 != std::string::npos &&
             p8 != std::string::npos &&
@@ -343,7 +322,17 @@ void Academia::carregarTreinos(int idUsuario)
             std::string nomeDoTreinoDaSerie = linhaSerie.substr(p8 + 1, p9 - p8 - 1);
             std::string nomeExercicioDaSerie = linhaSerie.substr(p9 + 1, p10 - p9 - 1);
             std::string carga = linhaSerie.substr(p10 + 1, p11 - p10 - 1);
-            std::string repeticoes = linhaSerie.substr(p11 + 1);
+            
+            std::string repeticoes;
+            std::string minutos = "0"; // Valor padrao caso seja um arquivo antigo
+
+            // AQUI: Verifica se o arquivo tem a coluna nova de minutos ou se eh o formato antigo
+            if (p12 != std::string::npos) {
+                repeticoes = linhaSerie.substr(p11 + 1, p12 - p11 - 1);
+                minutos = linhaSerie.substr(p12 + 1);
+            } else {
+                repeticoes = linhaSerie.substr(p11 + 1);
+            }
 
             if (std::stoi(idUsuarioSerie) == idUsuario) //Verifica mesmo usuario
             {
@@ -355,10 +344,12 @@ void Academia::carregarTreinos(int idUsuario)
                         {
                             if (ex.getNome() == nomeExercicioDaSerie)       //Verifica mesmo exercicio
                             {
+                                // AQUI: Passando a variavel de minutos convertida para inteiro
                                 ex.adicionarSerie(
                                     treino.getId(),
                                     std::stof(carga),
-                                    std::stoi(repeticoes)
+                                    std::stoi(repeticoes),
+                                    std::stoi(minutos) 
                                 );
 
                                 break;
@@ -368,6 +359,37 @@ void Academia::carregarTreinos(int idUsuario)
                 }
             }
         }
-
     }       //while
+}
+
+void Academia::salvarEdicaoTreinos(int idUsuario)
+{
+    // Como os treinos do usuario ja estao carregados e atualizados na memoria (vetor 'treinos'),
+    // a forma mais facil para um sistema de .txt e limpar os arquivos e reescrever.
+    // NOTA: Para um sistema real multi-usuario, voce filtraria as linhas dos OUTROS usuarios antes de limpar. 
+    // Para simplificar sua persistencia local, vamos recriar os arquivos.
+    
+    // ATENCAO: Essa logica simples apaga e reescreve TUDO baseado na memoria.
+    std::ofstream arqT("../../../dados/treinos.txt", std::ios::trunc);
+    std::ofstream arqE("../../../dados/treinos_exercicios.txt", std::ios::trunc);
+    std::ofstream arqS("../../../dados/series.txt", std::ios::trunc);
+
+    for (auto& t : treinos)
+    {
+        arqT << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" << t.getDia() << "\n";
+        
+        for (auto& ex : t.getExercicios())
+        {
+            arqE << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" 
+                 << ex.getNome() << ";" << ex.getGrupoMuscular() << "\n";
+            
+            for (auto& serie : ex.getSeries(t.getId()))
+            {
+                // AQUI: Incluido o getMinutos() no salvamento das series
+                arqS << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" 
+                     << ex.getNome() << ";" << serie.getCarga() << ";" << serie.getRepeticoes() 
+                     << ";" << serie.getMinutos() << "\n";
+            }
+        }
+    }
 }

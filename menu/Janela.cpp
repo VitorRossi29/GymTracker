@@ -14,14 +14,15 @@ Janela::Janela(Academia* sistema) :
 
     mostrarTelaInicial(true),
     mostrarTelaCadastro(false),
-	mostrarTelaLogin(false),
+    mostrarTelaLogin(false),
 
     mostrarTelaCadastrarExercicio(false),
     mostrarTelaVerExercicios(false),
 
     mostrarTelaCriarTreino(false),     
     mostrarTelaRealizarTreino(false),  
-	mostrarTelaEditarTreino(false),
+    mostrarTelaEditarTreino(false),
+    mostrarTelaVerTreinos(false), // Adicionado
 
     exercicioSelecionado(0),
     nomeTreino(""),
@@ -80,7 +81,7 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
         if(ImGui::Button("Cadastrar", ImVec2(200, 40)))
         {
             mostrarTelaInicial=false;
-			mostrarTelaCadastro=true;
+            mostrarTelaCadastro=true;
         }
 
     }
@@ -103,6 +104,11 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
 
         float center = ImGui::GetWindowWidth() / 2.0f;
 
+        // Botoes do menu principal
+        ImGui::SetCursorPosX(center - 100);
+        if (ImGui::Button("Ver Meus Treinos", ImVec2(200, 40)))
+            mostrarTelaVerTreinos = true;
+
         ImGui::SetCursorPosX(center - 100);
         if (ImGui::Button("Realizar Treino", ImVec2(200, 40)))
             mostrarTelaRealizarTreino = true;
@@ -123,10 +129,9 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
         if (ImGui::Button("Ver Exercicios", ImVec2(200, 40)))
             mostrarTelaVerExercicios = true;
 
-
-
         ImGui::PopFont();
 
+        if (mostrarTelaVerTreinos) telaVerTreinos();
         if (mostrarTelaCadastrarExercicio) telaCadastrarExercicio();
         if (mostrarTelaVerExercicios) telaMostrarExercicios();
         if (mostrarTelaCriarTreino) telaCriarTreino();
@@ -142,92 +147,92 @@ void Janela::renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNor
 
 void Janela::customizarEstilo()
 {
-	// Soft Cherry style by Patitotective from ImThemes
-	ImGuiStyle& style = ImGui::GetStyle();
+    // Soft Cherry style by Patitotective from ImThemes
+    ImGuiStyle& style = ImGui::GetStyle();
 
-	style.Alpha = 1.0f;
-	style.DisabledAlpha = 0.4f;
-	style.WindowPadding = ImVec2(10.0f, 10.0f);
-	style.WindowRounding = 4.0f;
-	style.WindowBorderSize = 0.0f;
-	style.WindowMinSize = ImVec2(50.0f, 50.0f);
-	style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
-	style.WindowMenuButtonPosition = ImGuiDir_Left;
-	style.ChildRounding = 0.0f;
-	style.ChildBorderSize = 1.0f;
-	style.PopupRounding = 1.0f;
-	style.PopupBorderSize = 1.0f;
-	style.FramePadding = ImVec2(5.0f, 3.0f);
-	style.FrameRounding = 3.0f;
-	style.FrameBorderSize = 0.0f;
-	style.ItemSpacing = ImVec2(6.0f, 6.0f);
-	style.ItemInnerSpacing = ImVec2(3.0f, 2.0f);
-	style.CellPadding = ImVec2(3.0f, 3.0f);
-	style.IndentSpacing = 6.0f;
-	style.ColumnsMinSpacing = 6.0f;
-	style.ScrollbarSize = 13.0f;
-	style.ScrollbarRounding = 16.0f;
-	style.GrabMinSize = 20.0f;
-	style.GrabRounding = 4.0f;
-	style.TabRounding = 4.0f;
-	style.TabBorderSize = 1.0f;
-	style.ColorButtonPosition = ImGuiDir_Right;
-	style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
-	style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
+    style.Alpha = 1.0f;
+    style.DisabledAlpha = 0.4f;
+    style.WindowPadding = ImVec2(10.0f, 10.0f);
+    style.WindowRounding = 4.0f;
+    style.WindowBorderSize = 0.0f;
+    style.WindowMinSize = ImVec2(50.0f, 50.0f);
+    style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+    style.WindowMenuButtonPosition = ImGuiDir_Left;
+    style.ChildRounding = 0.0f;
+    style.ChildBorderSize = 1.0f;
+    style.PopupRounding = 1.0f;
+    style.PopupBorderSize = 1.0f;
+    style.FramePadding = ImVec2(5.0f, 3.0f);
+    style.FrameRounding = 3.0f;
+    style.FrameBorderSize = 0.0f;
+    style.ItemSpacing = ImVec2(6.0f, 6.0f);
+    style.ItemInnerSpacing = ImVec2(3.0f, 2.0f);
+    style.CellPadding = ImVec2(3.0f, 3.0f);
+    style.IndentSpacing = 6.0f;
+    style.ColumnsMinSpacing = 6.0f;
+    style.ScrollbarSize = 13.0f;
+    style.ScrollbarRounding = 16.0f;
+    style.GrabMinSize = 20.0f;
+    style.GrabRounding = 4.0f;
+    style.TabRounding = 4.0f;
+    style.TabBorderSize = 1.0f;
+    style.ColorButtonPosition = ImGuiDir_Right;
+    style.ButtonTextAlign = ImVec2(0.5f, 0.5f);
+    style.SelectableTextAlign = ImVec2(0.0f, 0.0f);
 
-	style.Colors[ImGuiCol_Text] = ImVec4(0.85882354f, 0.92941177f, 0.8862745f, 1.0f);
-	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.52156866f, 0.54901963f, 0.53333336f, 1.0f);
-	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.12941177f, 0.13725491f, 0.16862746f, 1.0f);
-	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.14901961f, 0.15686275f, 0.1882353f, 1.0f);
-	style.Colors[ImGuiCol_PopupBg] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
-	style.Colors[ImGuiCol_Border] = ImVec4(0.13725491f, 0.11372549f, 0.13333334f, 1.0f);
-	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	style.Colors[ImGuiCol_FrameBg] = ImVec4(0.16862746f, 0.18431373f, 0.23137255f, 1.0f);
-	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.23137255f, 0.2f, 0.27058825f, 1.0f);
-	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.5019608f, 0.07450981f, 0.25490198f, 1.0f);
-	style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
-	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
-	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.23921569f, 0.23921569f, 0.21960784f, 1.0f);
-	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.3882353f, 0.3882353f, 0.37254903f, 1.0f);
-	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.69411767f, 0.69411767f, 0.6862745f, 1.0f);
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.69411767f, 0.69411767f, 0.6862745f, 1.0f);
-	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.65882355f, 0.13725491f, 0.1764706f, 1.0f);
-	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
-	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.70980394f, 0.21960784f, 0.26666668f, 1.0f);
-	style.Colors[ImGuiCol_Button] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
-	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_Header] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
-	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.5019608f, 0.07450981f, 0.25490198f, 1.0f);
-	style.Colors[ImGuiCol_Separator] = ImVec4(0.42745098f, 0.42745098f, 0.49803922f, 1.0f);
-	style.Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.09803922f, 0.4f, 0.7490196f, 1.0f);
-	style.Colors[ImGuiCol_SeparatorActive] = ImVec4(0.09803922f, 0.4f, 0.7490196f, 1.0f);
-	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
-	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_Tab] = ImVec4(0.1764706f, 0.34901962f, 0.5764706f, 1.0f);
-	style.Colors[ImGuiCol_TabHovered] = ImVec4(0.25882354f, 0.5882353f, 0.9764706f, 1.0f);
-	style.Colors[ImGuiCol_TabActive] = ImVec4(0.19607843f, 0.40784314f, 0.6784314f, 1.0f);
-	style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.06666667f, 0.101960786f, 0.14509805f, 1.0f);
-	style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.13333334f, 0.25882354f, 0.42352942f, 1.0f);
-	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.85882354f, 0.92941177f, 0.8862745f, 1.0f);
-	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.30980393f, 0.7764706f, 0.19607843f, 1.0f);
-	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
-	style.Colors[ImGuiCol_TableHeaderBg] = ImVec4(0.1882353f, 0.1882353f, 0.2f, 1.0f);
-	style.Colors[ImGuiCol_TableBorderStrong] = ImVec4(0.30980393f, 0.30980393f, 0.34901962f, 1.0f);
-	style.Colors[ImGuiCol_TableBorderLight] = ImVec4(0.22745098f, 0.22745098f, 0.24705882f, 1.0f);
-	style.Colors[ImGuiCol_TableRowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	style.Colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.38431373f, 0.627451f, 0.91764706f, 1.0f);
-	style.Colors[ImGuiCol_DragDropTarget] = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
-	style.Colors[ImGuiCol_NavHighlight] = ImVec4(0.25882354f, 0.5882353f, 0.9764706f, 1.0f);
-	style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
-	style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
-	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.8f, 0.8f, 0.8f, 0.3f);
+    style.Colors[ImGuiCol_Text] = ImVec4(0.85882354f, 0.92941177f, 0.8862745f, 1.0f);
+    style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.52156866f, 0.54901963f, 0.53333336f, 1.0f);
+    style.Colors[ImGuiCol_WindowBg] = ImVec4(0.12941177f, 0.13725491f, 0.16862746f, 1.0f);
+    style.Colors[ImGuiCol_ChildBg] = ImVec4(0.14901961f, 0.15686275f, 0.1882353f, 1.0f);
+    style.Colors[ImGuiCol_PopupBg] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
+    style.Colors[ImGuiCol_Border] = ImVec4(0.13725491f, 0.11372549f, 0.13333334f, 1.0f);
+    style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_FrameBg] = ImVec4(0.16862746f, 0.18431373f, 0.23137255f, 1.0f);
+    style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.23137255f, 0.2f, 0.27058825f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.5019608f, 0.07450981f, 0.25490198f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
+    style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.2f, 0.21960784f, 0.26666668f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.23921569f, 0.23921569f, 0.21960784f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.3882353f, 0.3882353f, 0.37254903f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.69411767f, 0.69411767f, 0.6862745f, 1.0f);
+    style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.69411767f, 0.69411767f, 0.6862745f, 1.0f);
+    style.Colors[ImGuiCol_CheckMark] = ImVec4(0.65882355f, 0.13725491f, 0.1764706f, 1.0f);
+    style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
+    style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.70980394f, 0.21960784f, 0.26666668f, 1.0f);
+    style.Colors[ImGuiCol_Button] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
+    style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_Header] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
+    style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.5019608f, 0.07450981f, 0.25490198f, 1.0f);
+    style.Colors[ImGuiCol_Separator] = ImVec4(0.42745098f, 0.42745098f, 0.49803922f, 1.0f);
+    style.Colors[ImGuiCol_SeparatorHovered] = ImVec4(0.09803922f, 0.4f, 0.7490196f, 1.0f);
+    style.Colors[ImGuiCol_SeparatorActive] = ImVec4(0.09803922f, 0.4f, 0.7490196f, 1.0f);
+    style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.6509804f, 0.14901961f, 0.34509805f, 1.0f);
+    style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_Tab] = ImVec4(0.1764706f, 0.34901962f, 0.5764706f, 1.0f);
+    style.Colors[ImGuiCol_TabHovered] = ImVec4(0.25882354f, 0.5882353f, 0.9764706f, 1.0f);
+    style.Colors[ImGuiCol_TabActive] = ImVec4(0.19607843f, 0.40784314f, 0.6784314f, 1.0f);
+    style.Colors[ImGuiCol_TabUnfocused] = ImVec4(0.06666667f, 0.101960786f, 0.14509805f, 1.0f);
+    style.Colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.13333334f, 0.25882354f, 0.42352942f, 1.0f);
+    style.Colors[ImGuiCol_PlotLines] = ImVec4(0.85882354f, 0.92941177f, 0.8862745f, 1.0f);
+    style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.30980393f, 0.7764706f, 0.19607843f, 1.0f);
+    style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.45490196f, 0.19607843f, 0.29803923f, 1.0f);
+    style.Colors[ImGuiCol_TableHeaderBg] = ImVec4(0.1882353f, 0.1882353f, 0.2f, 1.0f);
+    style.Colors[ImGuiCol_TableBorderStrong] = ImVec4(0.30980393f, 0.30980393f, 0.34901962f, 1.0f);
+    style.Colors[ImGuiCol_TableBorderLight] = ImVec4(0.22745098f, 0.22745098f, 0.24705882f, 1.0f);
+    style.Colors[ImGuiCol_TableRowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.38431373f, 0.627451f, 0.91764706f, 1.0f);
+    style.Colors[ImGuiCol_DragDropTarget] = ImVec4(1.0f, 1.0f, 0.0f, 1.0f);
+    style.Colors[ImGuiCol_NavHighlight] = ImVec4(0.25882354f, 0.5882353f, 0.9764706f, 1.0f);
+    style.Colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);
+    style.Colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.8f, 0.8f, 0.8f, 1.0f);
+    style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.8f, 0.8f, 0.8f, 0.3f);
 }
 
 void Janela::telaCadastrarExercicio()
@@ -241,14 +246,6 @@ void Janela::telaCadastrarExercicio()
         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
 
     ImGui::InputText("Nome", nome, 100);
-
-   /* static int series = 0;
-    static int repeticoes = 0;
-    static float carga = 0;
-
-    ImGui::InputInt("Series", &series);
-    ImGui::InputInt("Repeticoes", &repeticoes);
-    ImGui::InputFloat("Carga em KG", &carga);*/
 
     auto listaMusculos = sistemaAcademia->getGruposMusculares();
 
@@ -387,6 +384,7 @@ void Janela::telaCriarTreino()
     static int editarSerieIndex = -1;
     static int repeticoesTemp = 0;
     static float cargaTemp = 0.0f;
+    static int minutosTemp = 0;
 
     for (int i = 0; i < exerciciosDoTreino.size(); i++)
     {
@@ -403,12 +401,17 @@ void Janela::telaCriarTreino()
                 j < exerciciosDoTreino[i].getNumeroDeSeries(treinoTemp.getId());
                 j++)
             {
-                ImGui::Text(
-                    "Serie %d: %.1f kg de Carga | %d Repeticoes",
-                    j + 1,
-                    exerciciosDoTreino[i].getCarga(treinoTemp.getId(), j),
-                    exerciciosDoTreino[i].getRepeticoes(treinoTemp.getId(), j)
-                );
+                // Integrando a checagem de Cardio
+                if (exerciciosDoTreino[i].isCardio()) {
+                    ImGui::Text("Serie %d: %d Minutos", j + 1, exerciciosDoTreino[i].getMinutos(treinoTemp.getId(), j));
+                } else {
+                    ImGui::Text(
+                        "Serie %d: %.1f kg de Carga | %d Repeticoes",
+                        j + 1,
+                        exerciciosDoTreino[i].getCarga(treinoTemp.getId(), j),
+                        exerciciosDoTreino[i].getRepeticoes(treinoTemp.getId(), j)
+                    );
+                }
             }
         }
 
@@ -417,6 +420,7 @@ void Janela::telaCriarTreino()
             editarSerieIndex = i;
             repeticoesTemp = 0;
             cargaTemp = 0.0f;
+            minutosTemp = 0;
         }
 
         ImGui::SameLine();
@@ -439,15 +443,20 @@ void Janela::telaCriarTreino()
 
     if (ImGui::BeginPopupModal("AdicionarSerie", NULL, ImGuiWindowFlags_AlwaysAutoResize))
     {
-        ImGui::InputFloat("Carga", &cargaTemp);
-        ImGui::InputInt("Repeticoes", &repeticoesTemp);
+        if (exerciciosDoTreino[editarSerieIndex].isCardio()) {
+            ImGui::InputInt("Minutos", &minutosTemp);
+        } else {
+            ImGui::InputFloat("Carga", &cargaTemp);
+            ImGui::InputInt("Repeticoes", &repeticoesTemp);
+        }
 
         if (ImGui::Button("OK"))
         {
             exerciciosDoTreino[editarSerieIndex].adicionarSerie(
                 treinoTemp.getId(),
                 cargaTemp,
-                repeticoesTemp
+                repeticoesTemp,
+                minutosTemp
             );
 
             editarSerieIndex = -1;
@@ -476,8 +485,6 @@ void Janela::telaCriarTreino()
             treinoTemp.setDia(dias[diaSelecionado]);
             treinoTemp.setIdUsuario(idAtual);
 
-            std::cout << "idAtual = " << idAtual << std::endl;
-
             sistemaAcademia->adicionarTreino(treinoTemp);
 
             treinoTemp = Treino("", "");
@@ -503,6 +510,36 @@ void Janela::telaCriarTreino()
 
         ImGui::EndPopup();
     }
+
+    ImGui::End();
+}
+
+void Janela::telaVerTreinos()
+{
+    ImGuiIO& io = ImGui::GetIO();
+    ImGui::SetNextWindowPos(ImVec2(0, 0));
+    ImGui::SetNextWindowSize(io.DisplaySize);
+
+    ImGui::Begin("Meus Treinos", &mostrarTelaVerTreinos, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+
+    auto& treinos = sistemaAcademia->getTreinos();
+
+    if (treinos.empty()) {
+        ImGui::Text("Voce ainda nao possui treinos cadastrados.");
+    } else {
+        for (auto& t : treinos) {
+            if (ImGui::CollapsingHeader(t.getNome().c_str())) {
+                ImGui::Text("Dia: %s", t.getDia().c_str());
+                ImGui::Separator();
+                for (auto& ex : t.getExercicios()) {
+                    ImGui::BulletText("%s (%s)", ex.getNome().c_str(), ex.getGrupoMuscular().c_str());
+                }
+            }
+        }
+    }
+
+    ImGui::Spacing();
+    if (ImGui::Button("Sair")) mostrarTelaVerTreinos = false;
 
     ImGui::End();
 }
@@ -594,10 +631,14 @@ void Janela::telaRealizarTreino()
 
                 ImGui::SameLine();
 
-                ImGui::Text("Serie %d: %.1f kg de Carga | %d Repeticoes", j + 1,
-                    exs[i].getCarga(treino.getId(), j),
-                    exs[i].getRepeticoes(treino.getId(), j)
-                );
+                if (exs[i].isCardio()) {
+                    ImGui::Text("Serie %d: %d Minutos", j + 1, exs[i].getMinutos(treino.getId(), j));
+                } else {
+                    ImGui::Text("Serie %d: %.1f kg de Carga | %d Repeticoes", j + 1,
+                        exs[i].getCarga(treino.getId(), j),
+                        exs[i].getRepeticoes(treino.getId(), j)
+                    );
+                }
 
                 ImGui::PopID();
             }
@@ -675,7 +716,7 @@ void Janela::telaEditarTreino()
     }
 
     if(treinoSelecionado>=(int)treinos.size())
-		treinoSelecionado=-1;
+        treinoSelecionado=-1;
 
     if(treinoSelecionado==-1)
     {
@@ -688,7 +729,7 @@ void Janela::telaEditarTreino()
                 treinoSelecionado=i;
             }
         }
-	}
+    }
     else
     {
         auto& treino=treinos[treinoSelecionado];
@@ -696,7 +737,7 @@ void Janela::telaEditarTreino()
         ImGui::Text("Editando treino:");
  
         static char novoNome[100];
-        strcpy_s(novoNome, treino.getNome().c_str());
+        strcpy(novoNome, treino.getNome().c_str());
 
         //edita o nome
         if(ImGui::InputText("Nome", novoNome, 100))
@@ -704,7 +745,7 @@ void Janela::telaEditarTreino()
             treino.setNome(novoNome);
         }
 
-		//edita o dia
+        //edita o dia
         static int diaSelecionado=0;
         const char* dias[]={
             "Segunda",
@@ -726,11 +767,11 @@ void Janela::telaEditarTreino()
         if(ImGui::Combo("Dia do Treino", &diaSelecionado, dias, IM_ARRAYSIZE(dias)))
         {
             treino.setDia(dias[diaSelecionado]);
-		}
+        }
 
-		ImGui::Separator();
+        ImGui::Separator();
 
-		//adiciona exercicios
+        //adiciona exercicios
         auto& lista = sistemaAcademia->getExercicios();
 
         if (exercicioSelecionado>=lista.size())
@@ -757,36 +798,106 @@ void Janela::telaEditarTreino()
             }
         }
 
-		ImGui::Separator();
+        ImGui::Separator();
 
-        //remove exercicios
-        auto& exs=treino.getExercicios();
+        // Lista e edita os exercicios atuais e series do treino
+        auto& exs = treino.getExercicios();
 
-        for (int i=0; i<exs.size(); i++)
+        static int editarSerieIndexEdit = -1;
+        static int repeticoesTempEdit = 0;
+        static float cargaTempEdit = 0.0f;
+        static int minutosTempEdit = 0;
+
+        for (int i = 0; i < exs.size(); i++)
         {
             ImGui::PushID(i);
 
             ImGui::Text("%s", exs[i].getNome().c_str());
 
+            if (exs[i].getNumeroDeSeries(treino.getId()) > 0)
+            {
+                ImGui::Text("%d Series", exs[i].getNumeroDeSeries(treino.getId()));
+
+                for (int j = 0; j < exs[i].getNumeroDeSeries(treino.getId()); j++)
+                {
+                    if (exs[i].isCardio()) {
+                        ImGui::Text("Serie %d: %d Minutos", j + 1, exs[i].getMinutos(treino.getId(), j));
+                    } else {
+                        ImGui::Text("Serie %d: %.1f kg de Carga | %d Repeticoes", j + 1,
+                            exs[i].getCarga(treino.getId(), j),
+                            exs[i].getRepeticoes(treino.getId(), j)
+                        );
+                    }
+                }
+            }
+
+            if (ImGui::Button("Adicionar Serie"))
+            {
+                editarSerieIndexEdit = i;
+                repeticoesTempEdit = 0;
+                cargaTempEdit = 0.0f;
+                minutosTempEdit = 0;
+            }
+
             ImGui::SameLine();
 
-            if (ImGui::Button("Remover"))
+            if (ImGui::Button("Remover Exercicio"))
             {
                 treino.tiraExercicio(i);
                 ImGui::PopID();
                 break; 
             }
-
+            
+            ImGui::Separator();
             ImGui::PopID();
         }
 
-		ImGui::Separator();
-
-        //volta
-        if (ImGui::Button("Salvar"))
+        if (editarSerieIndexEdit != -1)
         {
-			mostrarTelaEditarTreino=false;  
-			treinoSelecionado=-1;
+            ImGui::OpenPopup("AdicionarSerieEdicao");
+        }
+
+        if (ImGui::BeginPopupModal("AdicionarSerieEdicao", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+        {
+            if (exs[editarSerieIndexEdit].isCardio()) {
+                ImGui::InputInt("Minutos", &minutosTempEdit);
+            } else {
+                ImGui::InputFloat("Carga", &cargaTempEdit);
+                ImGui::InputInt("Repeticoes", &repeticoesTempEdit);
+            }
+
+            if (ImGui::Button("OK"))
+            {
+                exs[editarSerieIndexEdit].adicionarSerie(
+                    treino.getId(),
+                    cargaTempEdit,
+                    repeticoesTempEdit,
+                    minutosTempEdit
+                );
+
+                editarSerieIndexEdit = -1;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::SameLine();
+
+            if (ImGui::Button("Cancelar"))
+            {
+                editarSerieIndexEdit = -1;
+                ImGui::CloseCurrentPopup();
+            }
+
+            ImGui::EndPopup();
+        }
+
+        ImGui::Spacing();
+
+        // botao de voltar que agora engatilha o salvamento dos dados sobrescrevendo o arquivo
+        if (ImGui::Button("Salvar Edicao"))
+        {
+            sistemaAcademia->salvarEdicaoTreinos(idAtual);
+            mostrarTelaEditarTreino = false;  
+            treinoSelecionado = -1;
         }
     }
 
@@ -805,13 +916,13 @@ void Janela::telaLogin()
     static char password[100];
     static bool errou = false;
 
-	ImGui::Text("Username");
+    ImGui::Text("Username");
     if (ImGui::InputText("##Username", username, 100))
     {
         errou=false;
     }
 
-	ImGui::Text("Password");
+    ImGui::Text("Password");
     if (ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password))
     {
         errou=false;
@@ -819,7 +930,7 @@ void Janela::telaLogin()
 
     if(ImGui::Button("Login"))
     {   
-		std::ifstream arquivo("../../../dados/usuarios.txt");
+        std::ifstream arquivo("../../../dados/usuarios.txt");
 
         if (arquivo.is_open())
         {
@@ -830,7 +941,7 @@ void Janela::telaLogin()
             while (std::getline(arquivo,linha))
             {
                 size_t pos = linha.find(';', 0);
-				size_t pos2 = linha.find(';',pos+1);
+                size_t pos2 = linha.find(';',pos+1);
 
                 if (pos != std::string::npos && pos2 != std::string::npos)
                 {
@@ -848,7 +959,7 @@ void Janela::telaLogin()
             
             if (!encontrado)
             {
-				errou=true;
+                errou=true;
             }
             else
             {
@@ -884,20 +995,20 @@ void Janela::telaCadastro()
     static char username[100];
     static char password[100];
     static char confirmPassword[100];
-	static bool erroSenha=false;
+    static bool erroSenha=false;
 
     ImGui::Text("Username");
     if(ImGui::InputText("##Username", username, 100)) erroSenha=false;
 
-	ImGui::Text("Password");
+    ImGui::Text("Password");
     if(ImGui::InputText("##Password", password, 100, ImGuiInputTextFlags_Password)) erroSenha=false;
 
-	ImGui::Text("Confirmar Password");
+    ImGui::Text("Confirmar Password");
     if(ImGui::InputText("##ConfirmPassword", confirmPassword, 100, ImGuiInputTextFlags_Password)) erroSenha=false;
 
     if(ImGui::Button("Cadastrar"))
     {
-		std::ifstream arquivoLeitura("../../../dados/usuarios.txt");
+        std::ifstream arquivoLeitura("../../../dados/usuarios.txt");
         int maiorId=0;
         std::string linha;
 
@@ -914,27 +1025,27 @@ void Janela::telaCadastro()
                     maiorId=id;
             }
         } 
-		arquivoLeitura.close();
+        arquivoLeitura.close();
 
         if(strcmp(password, confirmPassword)!=0)
         {
-			erroSenha=true;
+            erroSenha=true;
         }
         else
         {
-			erroSenha=false;
+            erroSenha=false;
 
             std::ofstream arquivoEscrita("../../../dados/usuarios.txt", std::ios::app);
 
             if (arquivoEscrita.is_open())
             {
-				std::string hashSenha = std::to_string(std::hash<std::string>{}(password));
+                std::string hashSenha = std::to_string(std::hash<std::string>{}(password));
                 arquivoEscrita<<username<<";"<<hashSenha<<";"<<maiorId+1<<"\n";
                 arquivoEscrita.close();
             }
 
             mostrarTelaCadastro=false;
-			mostrarTelaInicial=true;
+            mostrarTelaInicial=true;
         }
     }
 
@@ -948,7 +1059,7 @@ void Janela::telaCadastro()
 
     if (erroSenha)
     {
-        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "As senhas não coincidem");
+        ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), "As senhas nao coincidem");
     }
 
     ImGui::End();

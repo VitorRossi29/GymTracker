@@ -13,7 +13,7 @@ private:
     int idAtual;
 
     int itemAtual;
-	bool mostrarTelaInicial;
+    bool mostrarTelaInicial;
     bool mostrarTelaCadastro;
     bool mostrarTelaLogin;
 
@@ -22,7 +22,8 @@ private:
 
     bool mostrarTelaCriarTreino;
     bool mostrarTelaRealizarTreino;
-	bool mostrarTelaEditarTreino;
+    bool mostrarTelaEditarTreino;
+    bool mostrarTelaVerTreinos; // Movido para cá para organizar os booleanos
 
     char nome[100];
 
@@ -33,8 +34,8 @@ private:
 
     std::vector<Exercicio> exerciciosSelecionados;
 
-	int treinoSelecionado;
-	std::vector<int> exerciciosConcluidos;
+    int treinoSelecionado;
+    std::vector<int> exerciciosConcluidos;
 
     std::string usuarioLogado;
 
@@ -44,13 +45,13 @@ public:
     void renderizar(Academia& sistema, ImFont* fonteGrande, ImFont* fonteNormal);
     void customizarEstilo();
 
-	void telaLogin();
-	void telaCadastro();
+    void telaLogin();
+    void telaCadastro();
 
+    void telaVerTreinos();
     void telaCadastrarExercicio();
     void telaMostrarExercicios();
-
     void telaCriarTreino();
     void telaRealizarTreino();
-	void telaEditarTreino();
+    void telaEditarTreino(); // Mantida apenas uma declaração desta função
 };

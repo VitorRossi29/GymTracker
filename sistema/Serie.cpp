@@ -1,13 +1,24 @@
 #include "Serie.h"
 #include "Exercicio.h"
 
-Serie::Serie(float carg, unsigned int reps) :
-	carga(carg),
-	repeticoes(reps),
-	concluida(false)
+Serie::Serie(float carg, unsigned int reps, unsigned int min) :
+    carga(carg),
+    repeticoes(reps),
+    minutos(min),
+    concluida(false)
 {
 }
 
+void Serie::setMinutos(int min)
+{
+    if (min < 0) minutos = 0;
+    else minutos = min;
+}
+
+const int Serie::getMinutos() const
+{
+    return minutos;
+}
 void Serie::setRepeticoes(int reps)
 {
     if (reps < 0)

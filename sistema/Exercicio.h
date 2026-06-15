@@ -29,16 +29,21 @@ public:
     void concluirSerie(unsigned int idTreino, int idSerie);
     /*void incrementarSerie(unsigned int idTreino);*/
 
+    // AQUI: Nova funcao para verificar se e cardio
+    bool isCardio() const;
+
+    const int getRepeticoes(unsigned int idTreino, unsigned int idSerie);
+    const float getCarga(unsigned int idTreino, unsigned int idSerie);
+    // AQUI: Get de Minutos
+    const int getMinutos(unsigned int idTreino, unsigned int idSerie);
+
+    // AQUI: Adicionado minutos no final (padrao = 0 para nao quebrar o resto)
+    void adicionarSerie(unsigned int idTreino, float car, unsigned int reps, unsigned int min = 0);
     float getProgresso(unsigned int idTreino);
 
     int getNumeroDeSeries(unsigned int idTreino);
     int getSeriesConcluidas(unsigned int idTreino);
     bool& getConcluidaRef(int idTreino, int idSerie);
-
-	const int getRepeticoes(unsigned int idTreino, unsigned int idSerie);
-	const float getCarga(unsigned int idTreino, unsigned int idSerie);
-
-    void adicionarSerie(unsigned int idTreino, float car, unsigned int reps);
 
     std::vector<Serie>& getSeries(unsigned int idTreino);
 };

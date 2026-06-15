@@ -89,15 +89,27 @@ const float Exercicio::getCarga(unsigned int idTreino, unsigned int idSerie)
     return seriesEmSi[idTreino][idSerie].getCarga();
 }
 
-void Exercicio::adicionarSerie(unsigned int idTreino, float car, unsigned int reps)
-{
-    Serie novaSerie(car, reps);
-    seriesEmSi[idTreino].push_back(novaSerie);
-}
-
 std::vector<Serie>& Exercicio::getSeries(unsigned int idTreino)
 {
     return seriesEmSi[idTreino];
 }
 
+// AQUI: Implementacao de isCardio e getMinutos
+bool Exercicio::isCardio() const
+{
+    // Considera como cardio se o grupo muscular for esse
+    return grupoMuscular == "Cardio"; 
+}
+
+const int Exercicio::getMinutos(unsigned int idTreino, unsigned int idSerie)
+{
+    return seriesEmSi[idTreino][idSerie].getMinutos();
+}
+
+// AQUI: Passe a variavel min para o construtor da Serie
+void Exercicio::adicionarSerie(unsigned int idTreino, float car, unsigned int reps, unsigned int min)
+{
+    Serie novaSerie(car, reps, min);
+    seriesEmSi[idTreino].push_back(novaSerie);
+}
 
