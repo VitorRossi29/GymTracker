@@ -364,31 +364,134 @@ void Academia::carregarTreinos(int idUsuario)
 
 void Academia::salvarEdicaoTreinos(int idUsuario)
 {
-    // Como os treinos do usuario ja estao carregados e atualizados na memoria (vetor 'treinos'),
-    // a forma mais facil para um sistema de .txt e limpar os arquivos e reescrever.
-    // NOTA: Para um sistema real multi-usuario, voce filtraria as linhas dos OUTROS usuarios antes de limpar. 
-    // Para simplificar sua persistencia local, vamos recriar os arquivos.
-    
-    // ATENCAO: Essa logica simples apaga e reescreve TUDO baseado na memoria.
+    // ==========================
+    // TREINOS
+    // ==========================
+
+    std::vector<std::string> linhasTreinos;
+
+    {
+        std::ifstream arq("../../../dados/treinos.txt");
+        std::string linha;
+
+        while (std::getline(arq, linha))
+        {
+            size_t p = linha.find(';');
+
+            if (p != std::string::npos)
+            {
+                int idLinha = std::stoi(linha.substr(0, p));
+
+                if (idLinha != idUsuario)
+                    linhasTreinos.push_back(linha);
+            }
+        }
+    }
+
+    // ==========================
+    // EXERCICIOS
+    // ==========================
+
+    std::vector<std::string> linhasExercicios;
+
+    {
+        std::ifstream arq("../../../dados/treinos_exercicios.txt");
+        std::string linha;
+
+        while (std::getline(arq, linha))
+        {
+            size_t p = linha.find(';');
+
+            if (p != std::string::npos)
+            {
+                int idLinha = std::stoi(linha.substr(0, p));
+
+                if (idLinha != idUsuario)
+                    linhasExercicios.push_back(linha);
+            }
+        }
+    }
+
+    // ==========================
+    // SERIES
+    // ==========================
+
+    std::vector<std::string> linhasSeries;
+
+    {
+        std::ifstream arq("../../../dados/series.txt");
+        std::string linha;
+
+        while (std::getline(arq, linha))
+        {
+            size_t p = linha.find(';');
+
+            if (p != std::string::npos)
+            {
+                int idLinha = std::stoi(linha.substr(0, p));
+
+                if (idLinha != idUsuario)
+                    linhasSeries.push_back(linha);
+            }
+        }
+    }
+
+    // ==========================
+    // APAGA E REESCREVE
+    // ==========================
+
     std::ofstream arqT("../../../dados/treinos.txt", std::ios::trunc);
+
+    for (auto& l : linhasTreinos)
+        arqT << l << "\n";
+
     std::ofstream arqE("../../../dados/treinos_exercicios.txt", std::ios::trunc);
+
+    for (auto& l : linhasExercicios)
+        arqE << l << "\n";
+
     std::ofstream arqS("../../../dados/series.txt", std::ios::trunc);
+
+    for (auto& l : linhasSeries)
+        arqS << l << "\n";
+
+    // ==========================
+    // ESCREVE OS TREINOS DO
+    // USUARIO ATUAL
+    // ==========================
 
     for (auto& t : treinos)
     {
-        arqT << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" << t.getDia() << "\n";
-        
+        if (t.getIdUsuario() != idUsuario)
+            continue;
+
+        arqT
+            << t.getIdUsuario() << ";"
+            << t.getId() << ";"
+            << t.getNome() << ";"
+            << t.getDia() << "\n";
+
         for (auto& ex : t.getExercicios())
         {
-            arqE << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" 
-                 << ex.getNome() << ";" << ex.getGrupoMuscular() << "\n";
-            
-            for (auto& serie : ex.getSeries(t.getId()))
+            arqE
+                << t.getIdUsuario() << ";"
+                << t.getId() << ";"
+                << t.getNome() << ";"
+                << ex.getNome() << ";"
+                << ex.getGrupoMuscular() << "\n";
+
+            auto& listaSeries = ex.getSeries(t.getId());
+
+            for (auto& serie : listaSeries)
             {
-                // AQUI: Incluido o getMinutos() no salvamento das series
-                arqS << t.getIdUsuario() << ";" << t.getId() << ";" << t.getNome() << ";" 
-                     << ex.getNome() << ";" << serie.getCarga() << ";" << serie.getRepeticoes() 
-                     << ";" << serie.getMinutos() << "\n";
+                arqS
+                    << t.getIdUsuario() << ";"
+                    << t.getId() << ";"
+                    << t.getNome() << ";"
+                    << ex.getNome() << ";"
+                    << serie.getCarga() << ";"
+                    << serie.getRepeticoes() << ";"
+                    << serie.getMinutos() << "\n";
             }
         }
     }

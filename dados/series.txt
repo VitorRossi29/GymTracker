@@ -1,80 +1,16 @@
--1;0;Treino de Peitoral e Triceps;Supino Reto;5;12
--1;0;Treino de Peitoral e Triceps;Supino Reto;15;10
--1;0;Treino de Peitoral e Triceps;Supino Reto;25;8
--1;0;Treino de Peitoral e Triceps;Supino Inclinado;5;12
--1;0;Treino de Peitoral e Triceps;Supino Inclinado;15;10
--1;0;Treino de Peitoral e Triceps;Supino Inclinado;25;8
--1;0;Treino de Peitoral e Triceps;Elevacao Lateral;5;12
--1;0;Treino de Peitoral e Triceps;Elevacao Lateral;15;10
--1;0;Treino de Peitoral e Triceps;Elevacao Lateral;25;8
--1;0;Treino de Peitoral e Triceps;Triceps na Polia;5;12
--1;0;Treino de Peitoral e Triceps;Triceps na Polia;15;10
--1;0;Treino de Peitoral e Triceps;Triceps na Polia;25;8
--1;0;Treino de Peitoral e Triceps;Triceps Frances;5;12
--1;0;Treino de Peitoral e Triceps;Triceps Frances;15;10
--1;0;Treino de Peitoral e Triceps;Triceps Frances;25;8
--1;1;Treino de Costas e Biceps;Puxada Alta;14;7
--1;1;Treino de Costas e Biceps;Puxada Alta;17;6
--1;1;Treino de Costas e Biceps;Puxada Alta;11;7
--1;1;Treino de Costas e Biceps;Puxada Alta;17;8
--1;1;Treino de Costas e Biceps;Remada na Polia;15;11
--1;1;Treino de Costas e Biceps;Remada na Polia;19;10
--1;1;Treino de Costas e Biceps;Remada na Polia;20;8
--1;1;Treino de Costas e Biceps;Remada na Polia;10;6
--1;1;Treino de Costas e Biceps;Desenvolvimento de Ombros;13;6
--1;1;Treino de Costas e Biceps;Desenvolvimento de Ombros;15;11
--1;1;Treino de Costas e Biceps;Desenvolvimento de Ombros;20;12
--1;1;Treino de Costas e Biceps;Desenvolvimento de Ombros;18;6
--1;1;Treino de Costas e Biceps;Rosca Biceps;10;6
--1;1;Treino de Costas e Biceps;Rosca Biceps;11;11
--1;1;Treino de Costas e Biceps;Rosca Biceps;14;8
--1;1;Treino de Costas e Biceps;Rosca Scott;16;10
--1;1;Treino de Costas e Biceps;Rosca Scott;15;7
--1;1;Treino de Costas e Biceps;Rosca Scott;15;8
--1;1;Treino de Costas e Biceps;Rosca Scott;10;9
--1;2;Treino de Pernas e Abdomen;LegPress;20;11
--1;2;Treino de Pernas e Abdomen;LegPress;10;12
--1;2;Treino de Pernas e Abdomen;LegPress;17;6
--1;2;Treino de Pernas e Abdomen;Cadeira Extensora;19;8
--1;2;Treino de Pernas e Abdomen;Cadeira Extensora;15;6
--1;2;Treino de Pernas e Abdomen;Cadeira Extensora;14;11
--1;2;Treino de Pernas e Abdomen;Mesa Flexora;13;6
--1;2;Treino de Pernas e Abdomen;Mesa Flexora;16;6
--1;2;Treino de Pernas e Abdomen;Mesa Flexora;12;10
--1;2;Treino de Pernas e Abdomen;Mesa Flexora;16;12
--1;2;Treino de Pernas e Abdomen;Agachamento;18;7
--1;2;Treino de Pernas e Abdomen;Agachamento;19;7
--1;2;Treino de Pernas e Abdomen;Agachamento;10;6
--1;2;Treino de Pernas e Abdomen;Agachamento;17;11
--1;2;Treino de Pernas e Abdomen;Abdominal;19;11
--1;2;Treino de Pernas e Abdomen;Abdominal;13;10
--1;2;Treino de Pernas e Abdomen;Abdominal;11;9
-1;3;Treino do Full Body do Vitor;Supino Reto;0;20
-1;3;Treino do Full Body do Vitor;Supino Reto;22;12
-1;3;Treino do Full Body do Vitor;Supino Reto;25;10
-1;3;Treino do Full Body do Vitor;Supino Reto;27;6
-1;3;Treino do Full Body do Vitor;Supino Reto;30;4
-1;3;Treino do Full Body do Vitor;Triceps na Polia;30;12
-1;3;Treino do Full Body do Vitor;Triceps na Polia;30;12
-1;3;Treino do Full Body do Vitor;Triceps na Polia;35;10
-1;3;Treino do Full Body do Vitor;Triceps na Polia;35;10
-1;3;Treino do Full Body do Vitor;Puxada Alta;40;12
-1;3;Treino do Full Body do Vitor;Puxada Alta;50;12
-1;3;Treino do Full Body do Vitor;Puxada Alta;60;8
-1;3;Treino do Full Body do Vitor;Puxada Alta;60;8
-1;3;Treino do Full Body do Vitor;Rosca Biceps;16;8
-1;3;Treino do Full Body do Vitor;Rosca Biceps;16;8
-1;3;Treino do Full Body do Vitor;Rosca Biceps;14;8
-1;3;Treino do Full Body do Vitor;Cadeira Extensora;50;12
-1;3;Treino do Full Body do Vitor;Cadeira Extensora;50;12
-1;3;Treino do Full Body do Vitor;Cadeira Extensora;60;12
-1;3;Treino do Full Body do Vitor;Mesa Flexora;50;12
-1;3;Treino do Full Body do Vitor;Mesa Flexora;50;12
-1;3;Treino do Full Body do Vitor;Mesa Flexora;60;12
-2;3;Treino de pilates;Exercicio pilates 2;100;10
-2;3;Treino de pilates;Aquele com a bola de pilates;40;20
-2;3;Treino de pilates;Aquele com a bola de pilates;30;8
-2;3;Treino de pilates;Pirueta acrobatico de pilates;5;12
-2;3;Treino de pilates;Pirueta acrobatico de pilates;15;23
-1;4;Treino Voador;Elevacao Lateral;10;24
-1;4;Treino Voador;Desenvolvimento de Ombros;31;41
+1;3;Treino Full Body Vitor;Supino Reto;20;12;0
+1;3;Treino Full Body Vitor;Puxada Alta;15;12;0
+1;3;Treino Full Body Vitor;Rosca Biceps;16;12;0
+1;3;Treino Full Body Vitor;Triceps na Polia;30;12;0
+1;3;Treino Full Body Vitor;Mesa Flexora;50;30;0
+1;3;Treino Full Body Vitor;Cadeira Extensora;40;12;0
+1;3;Treino Full Body Vitor;Aquecimento para ombros do CBum;4;20;0
+2;3;Treino de pilates;Bola de Pilates;12;10
+2;3;Treino de pilates;Bola de Pilates;12;12
+2;3;Treino de pilates;Plantar bananeira;0;15
+2;3;Treino de pilates;Plantar bananeira;0;15
+2;3;Treino de pilates;Plantar bananeira;0;15
+2;3;Treino de pilates;Abdutora de elastico;0;12
+2;3;Treino de pilates;Abdutora de elastico;0;20
+2;3;Treino de pilates;Ponte;10;10
+2;3;Treino de pilates;Ponte;20;10

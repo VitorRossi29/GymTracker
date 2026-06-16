@@ -1,12 +1,11 @@
-1;3;Treino do Full Body do Vitor;Supino Reto;Peitoral
-1;3;Treino do Full Body do Vitor;Triceps na Polia;Triceps
-1;3;Treino do Full Body do Vitor;Puxada Alta;Costas
-1;3;Treino do Full Body do Vitor;Rosca Biceps;Biceps
-1;3;Treino do Full Body do Vitor;Cadeira Extensora;Pernas
-1;3;Treino do Full Body do Vitor;Mesa Flexora;Pernas
-2;3;Treino de pilates;Exercicio pilates 2;Abdomem
-2;3;Treino de pilates;Aquele com a bola de pilates;Abdomem
-2;3;Treino de pilates;Pirueta acrobatico de pilates;Pernas
-
-1;4;Treino Voador;Elevacao Lateral;Ombros
-1;4;Treino Voador;Desenvolvimento de Ombros;Ombros
+1;3;Treino Full Body Vitor;Supino Reto;Peitoral
+1;3;Treino Full Body Vitor;Puxada Alta;Costas
+1;3;Treino Full Body Vitor;Rosca Biceps;Biceps
+1;3;Treino Full Body Vitor;Triceps na Polia;Triceps
+1;3;Treino Full Body Vitor;Mesa Flexora;Pernas
+1;3;Treino Full Body Vitor;Cadeira Extensora;Pernas
+1;3;Treino Full Body Vitor;Aquecimento para ombros do CBum;Ombros
+2;3;Treino de pilates;Bola de Pilates;Abdomem
+2;3;Treino de pilates;Plantar bananeira;Abdomem
+2;3;Treino de pilates;Abdutora de elastico;Pernas
+2;3;Treino de pilates;Ponte;Abdomem

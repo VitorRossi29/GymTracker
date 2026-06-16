@@ -1,3 +1,2 @@
-1;3;Treino do Full Body do Vitor;Quarta
-2;3;Treino de pilates;Segunda
-1;4;Treino Voador;Quinta
+1;3;Treino Full Body Vitor;Quinta
+2;3;Treino de pilates;Terca
