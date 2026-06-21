@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "GymTracker",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/GymTracker",
+            //"cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/build",
+            "stopAtEntry": false,
+            "MIMode": "gdb"
+        }
+    ]
+}

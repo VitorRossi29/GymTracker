@@ -46,7 +46,8 @@ void Academia::adicionarExercicio(std::string nome,std::string grupo,int id)
     Exercicio novoExercicio(nome,grupo);
     todosExercicios.push_back(novoExercicio);
 
-    std::ofstream arquivo("../../../dados/exercicios.txt",std::ios::app);
+    std::filesystem::path file=std::filesystem::current_path().parent_path() / "dados" / "usuarios.txt";
+    std::ofstream arquivo(file);
 	arquivo <<nome<<";"<<grupo<<";"<<id<<std::endl;
 }
 
@@ -97,10 +98,8 @@ void Academia::adicionarTreino(Treino t)
 
     arqExercicios.close();
 
-    std::ofstream arqSeries(
-        "../../../dados/series.txt",
-        std::ios::app
-    );
+    std::filesystem::path file=std::filesystem::current_path().parent_path() / "dados" / "usuarios.txt";
+    std::ofstream arqSeries(file);
 
     for (auto& ex : t.getExercicios())
     {

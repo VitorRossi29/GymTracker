@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include <filesystem>
+
 Janela::Janela(Academia* sistema) :
     sistemaAcademia(sistema),
     itemAtual(0),
@@ -930,7 +932,8 @@ void Janela::telaLogin()
 
     if(ImGui::Button("Login"))
     {   
-        std::ifstream arquivo("../../../dados/usuarios.txt");
+        std::filesystem::path file=std::filesystem::current_path().parent_path() / "dados" / "usuarios.txt";
+        std::ifstream arquivo(file);
 
         if (arquivo.is_open())
         {
@@ -1008,7 +1011,10 @@ void Janela::telaCadastro()
 
     if(ImGui::Button("Cadastrar"))
     {
-        std::ifstream arquivoLeitura("../../../dados/usuarios.txt");
+        std::cout << "cwd: " << std::filesystem::current_path() << std::endl;//teste
+
+        std::filesystem::path file=std::filesystem::current_path().parent_path() / "dados" / "usuarios.txt";
+        std::ifstream arquivoLeitura(file);
         int maiorId=0;
         std::string linha;
 
@@ -1035,7 +1041,9 @@ void Janela::telaCadastro()
         {
             erroSenha=false;
 
-            std::ofstream arquivoEscrita("../../../dados/usuarios.txt", std::ios::app);
+            std::filesystem::path file=std::filesystem::current_path().parent_path() / "dados" / "usuarios.txt";
+            std::ofstream arquivoEscrita(file,std::ios::app);
+            //std::ofstream arquivoEscrita("../dados/usuarios.txt", std::ios::app);
 
             if (arquivoEscrita.is_open())
             {
