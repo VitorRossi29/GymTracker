@@ -14,6 +14,8 @@ Academia::Academia()
         "Panturrilha", "Abdomem", 
         "Cardio" // AQUI: Nova categoria
     };
+
+    std::cout << std::filesystem::current_path() << std::endl;
 }
 
 bool Academia::exercicioExiste(const std::string& nome)
